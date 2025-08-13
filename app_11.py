@@ -2030,7 +2030,7 @@ elif st.session_state.app_step == 'payment':
         if st.button("Pagar e Cruzar o Portal para a Revelação", use_container_width=True):
             try:
                 # URL base da sua aplicação na Streamlit Cloud
-                APP_URL = "https://seu-nome-de-app.streamlit.app/" # <-- MUITO IMPORTANTE: ATUALIZE COM SEU URL REAL
+                APP_URL = "https://taro-mistico-app-ekgvukw2wdu2xmytxbcktx.streamlit.app/" # <-- MUITO IMPORTANTE: ATUALIZE COM SEU URL REAL
 
                 # Cria uma Sessão de Checkout no Stripe
                 checkout_session = stripe.checkout.Session.create(
