@@ -111,6 +111,14 @@ def apply_mystical_theme():
             font-size: 1.2rem !important; /* Mantém o tamanho consistente */
         }}
 
+        /* <<< NOVA REGRA: Cor do texto do Spinner >>> */
+        [data-testid="stSpinner"] > div {{
+            color: var(--text-light) !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            font-size: 1.2rem !important;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7) !important;
+        }}
+
         /* ==================== CONTAINERS E CARDS MÍSTICOS (SOLUÇÃO CORRIGIDA) ==================== */
 
         /* Regra para o cabeçalho, que já funciona bem */
