@@ -47,7 +47,7 @@ def apply_mystical_theme():
             --mystic-blue: #1e3a5f;
             --dark-bg: #0f0f23;
             --card-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);
-            --text-light: #f5f5dc;
+            --text-light: #f5f5dc; /* Cor bege/branca para textos claros */
             --text-muted: #b8860b;
             --border-mystical: 2px solid rgba(212, 175, 55, 0.3);
         }}
@@ -79,63 +79,45 @@ def apply_mystical_theme():
             letter-spacing: 1px;
         }}
 
-        h1 {{
-            font-size: 3.5rem !important;
-            font-weight: 700 !important;
-            text-align: center;
-            margin-bottom: 0.5rem !important;
-            padding-bottom: 0 !important;
-            border-bottom: none !important;
-        }}
-
+        h1 {{ font-size: 3.5rem !important; font-weight: 700 !important; text-align: center; margin-bottom: 0.5rem !important; padding-bottom: 0 !important; border-bottom: none !important; }}
         h2 {{ font-size: 2.2rem !important; font-weight: 600 !important; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 0.5rem; }}
         h3 {{ font-size: 1.8rem !important; font-weight: 500 !important; color: var(--secondary-gold) !important; }}
 
-        /* <<< CORREÇÃO 1: REGRA DE FONTE MAIS ESPECÍFICA E SEGURA >>> */
-        /* Em vez de uma regra global para 'p, div, span, label', aplicamos a fonte apenas onde queremos,
-           evitando conflito com os ícones internos do Streamlit (a causa do 'keyboard_arrow_right'). */
-        .st-emotion-cache-1629p8f p, /* Parágrafos principais */
-        .stMarkdown p, /* Parágrafos dentro de st.markdown */
-        .sttextinput_label, /* Labels de st.text_input */
-        .sttextarea_label, /* Labels de st.text_area */
-        .stselectbox_label, /* Labels de st.selectbox */
-        div[data-baseweb="select"] > div, /* Texto dentro do selectbox */
-        [data-testid="stExpander"] summary, /* Texto do cabeçalho do expander */
-        .stButton > button, /* Texto do botão */
-        [data-testid="stDownloadButton"] button div, /* Texto do botão de download */
-        [data-testid="stAlert"] div[role="alert"] /* Texto dentro de alertas */
-        {{
+        /* Regra de fonte segura que já corrigiu o ícone do expander */
+        .st-emotion-cache-1629p8f p, .stMarkdown p, .sttextinput_label, .sttextarea_label, .stselectbox_label, div[data-baseweb="select"] > div, [data-testid="stExpander"] summary, .stButton > button, [data-testid="stDownloadButton"] button div, [data-testid="stAlert"] div[role="alert"] {{
             font-family: 'Cormorant Garamond', serif !important;
             color: var(--text-light) !important;
             font-size: 1.2rem !important;
             line-height: 1.7 !important;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
         }}
+        .stButton > button, [data-testid="stDownloadButton"] button {{ font-family: 'Cinzel', serif !important; }}
 
-        /* Precisamos resetar a fonte para os botões que devem usar Cinzel */
-        .stButton > button, [data-testid="stDownloadButton"] button {{
-             font-family: 'Cinzel', serif !important;
+        /* <<< CORREÇÃO 2: ESTILO PARA O SUBTÍTULO DO CABEÇALHO >>> */
+        .header-container p {{
+            color: var(--text-light) !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            font-size: 1.1rem !important;
+            font-style: italic !important;
+            text-align: center;
+            margin-top: -1rem;
+            margin-bottom: 0;
         }}
 
-        /* Removemos a regra global antiga para evitar conflitos */
-        /* p, div, span, label {{ ... }} FOI REMOVIDA */
-
         /* ==================== CONTAINERS E CARDS MÍSTICOS ==================== */
-        /* <<< CORREÇÃO 2: AUMENTO DA OPACIDADE DOS FUNDOS DOS CONTAINERS >>> */
-        /* Aumentamos a opacidade (o último valor em rgba) para garantir que o fundo roxo
-           seja visível na Streamlit Cloud, mesmo com o backdrop-filter. */
+        /* <<< CORREÇÃO 3: OPACIDADE DOS CONTAINERS AUMENTADA AGRESSIVAMENTE >>> */
         [data-testid="stVerticalBlockBorderWrapper"] {{
-            background: linear-gradient(145deg, rgba(46, 26, 71, 0.85) 0%, rgba(30, 58, 95, 0.8) 50%, rgba(15, 15, 35, 0.9) 100%) !important;
+            background: linear-gradient(145deg, rgba(46, 26, 71, 0.95) 0%, rgba(30, 58, 95, 0.9) 50%, rgba(15, 15, 35, 0.98) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow), inset 0 1px 0 rgba(212, 175, 55, 0.2) !important;
-            backdrop-filter: blur(8px) !important;
+            backdrop-filter: blur(5px) !important; /* Reduzir um pouco o blur pode ajudar também */
             padding: 1.5rem !important;
             margin: 1rem 0 !important;
         }}
 
         .header-container {{
-            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
+            background: linear-gradient(160deg, rgba(46, 26, 71, 0.98) 0%, rgba(26, 26, 46, 0.95) 70%, rgba(15, 15, 35, 0.98) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow) !important;
@@ -147,74 +129,51 @@ def apply_mystical_theme():
         /* ==================== BOTÕES MÍSTICOS AVANÇADOS ==================== */
         .stButton > button, [data-testid="stDownloadButton"] button {{
             background: linear-gradient(145deg, var(--deep-purple) 0%, var(--mystic-blue) 50%, var(--deep-purple) 100%) !important;
-            color: var(--primary-gold) !important;
-            border: 2px solid var(--primary-gold) !important;
-            border-radius: 25px !important;
-            font-family: 'Cinzel', serif !important;
-            font-size: 1.1rem !important;
-            font-weight: 500 !important;
-            padding: 0.8rem 2rem !important;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            width: 100%;
-            position: relative;
+            color: var(--primary-gold) !important; border: 2px solid var(--primary-gold) !important; border-radius: 25px !important;
+            font-family: 'Cinzel', serif !important; font-size: 1.1rem !important; font-weight: 500 !important;
+            padding: 0.8rem 2rem !important; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            width: 100%; position: relative;
         }}
-
         .stButton > button:hover, [data-testid="stDownloadButton"] button:hover {{
             transform: translateY(-2px) scale(1.02) !important;
             box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3) !important;
             border-color: var(--secondary-gold) !important;
         }}
-
-        [data-testid="stDownloadButton"] button a {{
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            text-indent: -9999px; z-index: 1;
-        }}
-
-        [data-testid="stDownloadButton"] button div {{
-            color: var(--primary-gold) !important;
-            z-index: 2; position: relative;
-        }}
-
-        [data-testid="stDownloadButton"] button:hover div {{
-            color: var(--secondary-gold) !important;
-        }}
+        [data-testid="stDownloadButton"] button a {{ position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-indent: -9999px; z-index: 1; }}
+        [data-testid="stDownloadButton"] button div {{ color: var(--primary-gold) !important; z-index: 2; position: relative; }}
+        [data-testid="stDownloadButton"] button:hover div {{ color: var(--secondary-gold) !important; }}
 
         /* ==================== EXPANDER MÍSTICO (ACORDEÃO) ==================== */
-        /* Com a correção na fonte, o expander deve funcionar perfeitamente.
-           Mantemos os estilos de cor e borda. */
         [data-testid="stExpander"] {{
             border-color: rgba(212, 175, 55, 0.4) !important;
             transition: all 0.3s ease-in-out !important;
         }}
-
         [data-testid="stExpander"]:hover {{
             border-color: var(--primary-gold) !important;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important;
         }}
-
         [data-testid="stExpander"] summary {{
             color: var(--secondary-gold) !important;
             font-style: italic;
         }}
+        [data-testid="stExpander"] summary svg {{ fill: var(--primary-gold) !important; }}
 
-        [data-testid="stExpander"] summary svg {{
-            fill: var(--primary-gold) !important;
+        /* <<< CORREÇÃO 1: REMOVE FUNDO BRANCO DO EXPANDER QUANDO ABERTO >>> */
+        [data-testid="stExpander"][open] > summary,
+        [data-testid="stExpander"][open] > summary:hover {{
+            background-color: transparent !important;
         }}
 
         /* ==================== CAMPOS DE ENTRADA MÍSTICOS ==================== */
         .stTextInput input, .stTextArea textarea {{
             background: linear-gradient(145deg, rgba(15, 15, 35, 0.8) 0%, rgba(46, 26, 71, 0.6) 100%) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 10px !important;
-            color: var(--text-light) !important;
-            caret-color: var(--primary-gold) !important;
+            border: 1px solid rgba(212, 175, 55, 0.3) !important; border-radius: 10px !important;
+            color: var(--text-light) !important; caret-color: var(--primary-gold) !important;
         }}
         .stTextInput input::placeholder, .stTextArea textarea::placeholder {{ color: var(--text-muted) !important; font-style: italic; }}
         .stSelectbox > div > div {{
             background: linear-gradient(145deg, rgba(15, 15, 35, 0.9) 0%, rgba(46, 26, 71, 0.7) 100%) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 10px !important;
+            border: 1px solid rgba(212, 175, 55, 0.3) !important; border-radius: 10px !important;
         }}
 
         /* ==================== SELECTBOX DROPDOWN (OPÇÕES) ==================== */
@@ -2262,7 +2221,8 @@ def page_result():
 st.html("""
 <div class="header-container">
     <h1 class="main-title">Tarô Místico</h1>
-    <p style='text-align: center; font-style: italic; font-size: 1.1rem; margin-top: -1rem; margin-bottom: 0;'>Um portal para o autoconhecimento através dos arquétipos universais</p>
+    <!-- A tag <p> agora não tem mais estilo inline, ele será aplicado pelo CSS global -->
+    <p>Um portal para o autoconhecimento através dos arquétipos universais</p>
     <div style="text-align: center; margin: 1rem 0;">
         <div style="font-size: 1.5rem; color: #d4af37; opacity: 0.8; animation: pulse 2s ease-in-out infinite alternate;">
             ⟡ ◦ ❋ ◦ ⟡
