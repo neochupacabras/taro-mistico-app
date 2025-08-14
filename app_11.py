@@ -93,7 +93,7 @@ def apply_mystical_theme():
         }}
         .stButton > button, [data-testid="stDownloadButton"] button {{ font-family: 'Cinzel', serif !important; }}
 
-        /* <<< CORREÇÃO 2: ESTILO PARA O SUBTÍTULO DO CABEÇALHO >>> */
+        /* CORREÇÃO PARA O SUBTÍTULO DO CABEÇALHO */
         .header-container p {{
             color: var(--text-light) !important;
             font-family: 'Cormorant Garamond', serif !important;
@@ -104,7 +104,7 @@ def apply_mystical_theme():
             margin-bottom: 0;
         }}
 
-        /* ==================== CONTAINERS E CARDS MÍSTICOS (SOLUÇÃO DEFINITIVA) ==================== */
+        /* ==================== CONTAINERS E CARDS MÍSTICOS (SOLUÇÃO CORRIGIDA) ==================== */
 
         /* Regra para o cabeçalho, que já funciona bem */
         .header-container {{
@@ -116,32 +116,45 @@ def apply_mystical_theme():
             margin: 1rem 0 !important;
         }}
 
-        /* Regra para os containers do Streamlit (st.container(border=True)) */
+        /* SOLUÇÃO 1: Abordagem direta (mais compatível com Streamlit Cloud) */
         [data-testid="stVerticalBlockBorderWrapper"] {{
-            position: relative; /* Essencial para o posicionamento do ::before */
-            background: transparent !important; /* Forçamos a transparência do container original */
-            border: none !important; /* Removemos a borda original */
-            padding: 1.5rem !important; /* Mantemos o padding para o conteúdo interno */
+            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
+            border: var(--border-mystical) !important;
+            border-radius: 15px !important;
+            box-shadow: var(--card-shadow) !important;
+            backdrop-filter: blur(5px) !important;
+            padding: 1.5rem !important;
             margin: 1rem 0 !important;
-            border-radius: 15px; /* Mantemos o raio para o elemento pai */
-            z-index: 1; /* Garante que o conteúdo fique na frente do fundo */
+            position: relative !important;
         }}
 
-        /* A MÁGICA ACONTECE AQUI: Criamos a camada de fundo */
-        [data-testid="stVerticalBlockBorderWrapper"]::before {{
+        /* SOLUÇÃO 2: Fallback usando ::after (caso a primeira não funcione) */
+        [data-testid="stVerticalBlockBorderWrapper"]::after {{
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            /* Aplicamos nosso estilo à camada de fundo */
             background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow) !important;
             backdrop-filter: blur(5px);
-            z-index: -1; /* Colocamos essa camada atrás do conteúdo */
+            z-index: 0; /* Mudança crítica: de -1 para 0 */
+            pointer-events: none;
+        }}
+
+        /* Garantir que o conteúdo dos containers fique visível */
+        [data-testid="stVerticalBlockBorderWrapper"] > div {{
+            position: relative !important;
+            z-index: 1 !important;
+        }}
+
+        /* SOLUÇÃO 3: Forçar visibilidade com classes específicas */
+        .stVerticalBlock, .element-container {{
+            position: relative !important;
+            z-index: 2 !important;
         }}
 
         /* ==================== BOTÕES MÍSTICOS AVANÇADOS ==================== */
@@ -176,7 +189,7 @@ def apply_mystical_theme():
         }}
         [data-testid="stExpander"] summary svg {{ fill: var(--primary-gold) !important; }}
 
-        /* <<< CORREÇÃO 1: REMOVE FUNDO BRANCO DO EXPANDER QUANDO ABERTO >>> */
+        /* CORREÇÃO: REMOVE FUNDO BRANCO DO EXPANDER QUANDO ABERTO */
         [data-testid="stExpander"][open] > summary,
         [data-testid="stExpander"][open] > summary:hover {{
             background-color: transparent !important;
@@ -286,6 +299,12 @@ def apply_mystical_theme():
         [data-testid="column"]:nth-child(1) .card-reveal {{ animation-delay: 0.1s; }}
         [data-testid="column"]:nth-child(2) .card-reveal {{ animation-delay: 0.3s; }}
         [data-testid="column"]:nth-child(3) .card-reveal {{ animation-delay: 0.5s; }}
+
+        /* ==================== FORÇAR VISIBILIDADE DOS CONTAINERS (ÚLTIMA LINHA DE DEFESA) ==================== */
+        [data-testid="stVerticalBlockBorderWrapper"] {{
+            opacity: 1 !important;
+            visibility: visible !important;
+        }}
     </style>
     """)
 
