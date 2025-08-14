@@ -104,18 +104,44 @@ def apply_mystical_theme():
             margin-bottom: 0;
         }}
 
-        /* ==================== CONTAINERS E CARDS MÍSTICOS ==================== */
-        /* <<< ESTA É A CORREÇÃO PRINCIPAL E DEFINITIVA >>>
-           Esta regra única agora se aplica tanto ao seu cabeçalho quanto
-           a todos os containers criados com st.container(border=True). */
-        .header-container, [data-testid="stVerticalBlockBorderWrapper"] {{
+        /* ==================== CONTAINERS E CARDS MÍSTICOS (SOLUÇÃO DEFINITIVA) ==================== */
+
+        /* Regra para o cabeçalho, que já funciona bem */
+        .header-container {{
             background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow) !important;
             padding: 1.5rem !important;
             margin: 1rem 0 !important;
+        }}
+
+        /* Regra para os containers do Streamlit (st.container(border=True)) */
+        [data-testid="stVerticalBlockBorderWrapper"] {{
+            position: relative; /* Essencial para o posicionamento do ::before */
+            background: transparent !important; /* Forçamos a transparência do container original */
+            border: none !important; /* Removemos a borda original */
+            padding: 1.5rem !important; /* Mantemos o padding para o conteúdo interno */
+            margin: 1rem 0 !important;
+            border-radius: 15px; /* Mantemos o raio para o elemento pai */
+            z-index: 1; /* Garante que o conteúdo fique na frente do fundo */
+        }}
+
+        /* A MÁGICA ACONTECE AQUI: Criamos a camada de fundo */
+        [data-testid="stVerticalBlockBorderWrapper"]::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Aplicamos nosso estilo à camada de fundo */
+            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
+            border: var(--border-mystical) !important;
+            border-radius: 15px !important;
+            box-shadow: var(--card-shadow) !important;
             backdrop-filter: blur(5px);
+            z-index: -1; /* Colocamos essa camada atrás do conteúdo */
         }}
 
         /* ==================== BOTÕES MÍSTICOS AVANÇADOS ==================== */
