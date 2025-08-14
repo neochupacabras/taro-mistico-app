@@ -329,6 +329,11 @@ def apply_mystical_theme():
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 15px rgba(244, 228, 166, 0.4) !important; /* Sombra normal + brilho dourado */
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
             display: block !important;
+
+            /* --- CORREÇÃO FINAL PARA GARANTIR O CLIQUE --- */
+            position: relative;
+            z-index: 9999;
+            pointer-events: auto !important;
         }}
 
         .payment-button-container:hover {{
