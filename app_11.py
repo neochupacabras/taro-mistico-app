@@ -163,25 +163,48 @@ def apply_mystical_theme():
         [data-testid="stDownloadButton"] button div {{ color: var(--primary-gold) !important; z-index: 2; position: relative; }}
         [data-testid="stDownloadButton"] button:hover div {{ color: var(--secondary-gold) !important; }}
 
-        /* ==================== EXPANDER MÍSTICO (ACORDEÃO) ==================== */
+        /* ==================== EXPANDER MÍSTICO (ACORDEÃO) - VERSÃO CORRIGIDA ==================== */
         [data-testid="stExpander"] {{
             border-color: rgba(212, 175, 55, 0.4) !important;
             transition: all 0.3s ease-in-out !important;
+            background: transparent !important;
         }}
+
         [data-testid="stExpander"]:hover {{
             border-color: var(--primary-gold) !important;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important;
         }}
+
+        /* Cabeçalho do expander - sempre roxo */
         [data-testid="stExpander"] summary {{
             color: var(--secondary-gold) !important;
             font-style: italic;
+            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
+            border-radius: 8px !important;
+            padding: 0.75rem 1rem !important;
+            margin: -0.75rem -1rem 0.5rem -1rem !important;
         }}
-        [data-testid="stExpander"] summary svg {{ fill: var(--primary-gold) !important; }}
 
-        /* CORREÇÃO: REMOVE FUNDO BRANCO DO EXPANDER QUANDO ABERTO */
+        /* Ícone do expander */
+        [data-testid="stExpander"] summary svg {{
+            fill: var(--primary-gold) !important;
+        }}
+
+        /* CORREÇÃO CRÍTICA: Remove fundo branco quando aberto */
         [data-testid="stExpander"][open] > summary,
-        [data-testid="stExpander"][open] > summary:hover {{
-            background-color: transparent !important;
+        [data-testid="stExpander"][open] > summary:hover,
+        [data-testid="stExpander"][open] > summary:focus,
+        [data-testid="stExpander"][open] > summary:active {{
+            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
+            color: var(--secondary-gold) !important;
+        }}
+
+        /* Garante que o conteúdo interno também tenha fundo adequado */
+        [data-testid="stExpander"] > div:last-child {{
+            background: rgba(15, 15, 35, 0.3) !important;
+            border-radius: 0 0 8px 8px !important;
+            padding: 1rem !important;
+            margin-top: 0.5rem !important;
         }}
 
         /* ==================== CAMPOS DE ENTRADA MÍSTICOS ==================== */
@@ -295,12 +318,6 @@ def apply_mystical_theme():
             visibility: visible !important;
         }}
 
-        /* ==================== CSS DE DEBUG SIMPLIFICADO (REMOVER APÓS TESTES) ==================== */
-        /* Agora só testando o seletor correto */
-        .stVerticalBlock {{
-            border: 3px solid lime !important;
-            background-color: rgba(46, 26, 71, 0.95) !important;
-        }}
     </style>
     """)
 
