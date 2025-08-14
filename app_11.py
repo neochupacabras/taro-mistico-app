@@ -102,13 +102,12 @@ def apply_mystical_theme():
         }}
 
         /* ==================== CONTAINERS E CARDS MÍSTICOS ==================== */
-        /* Estilo para os containers GERAIS (deixamos como estava) */
+        /* Estilo para os containers GERAIS (com fundo sólido para compatibilidade) */
         [data-testid="stVerticalBlockBorderWrapper"] {{
-            background: linear-gradient(145deg, rgba(46, 26, 71, 0.7) 0%, rgba(30, 58, 95, 0.6) 50%, rgba(15, 15, 35, 0.8) 100%) !important;
+            background-color: rgba(30, 20, 50, 0.85) !important; /* Fundo roxo escuro semi-transparente */
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow), inset 0 1px 0 rgba(212, 175, 55, 0.2) !important;
-            backdrop-filter: blur(8px) !important; /* Reduzimos um pouco o blur para compensar a opacidade */
             padding: 1.5rem !important;
             margin: 1rem 0 !important;
         }}
@@ -192,26 +191,41 @@ def apply_mystical_theme():
             color: var(--secondary-gold) !important;
         }}
 
-        /* ==================== EXPANDER MÍSTICO (ACORDEÃO) ==================== */
+        /* ==================== EXPANDER MÍSTICO (ACORDEÃO) - ROBUSTO ==================== */
         [data-testid="stExpander"] {{
-            border-color: rgba(212, 175, 55, 0.4) !important; /* Borda dourada sutil */
+            border-color: rgba(212, 175, 55, 0.4) !important;
             transition: all 0.3s ease-in-out !important;
         }}
-
         [data-testid="stExpander"]:hover {{
-            border-color: var(--primary-gold) !important; /* Borda dourada mais forte no hover */
+            border-color: var(--primary-gold) !important;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important;
         }}
-
-        /* Estilizando o CABEÇALHO do expander (o texto clicável) */
+        /* Cabeçalho do expander */
         [data-testid="stExpander"] summary {{
             color: var(--secondary-gold) !important;
             font-style: italic;
+            position: relative;
+            padding-left: 2rem; /* Espaço para nosso ícone customizado */
         }}
-
-        /* Estilizando a SETA do expander */
-        [data-testid="stExpander"] summary svg {{
-            fill: var(--primary-gold) !important;
+        /* Esconde a seta padrão do Streamlit (SVG e outros) */
+        [data-testid="stExpander"] summary svg,
+        [data-testid="stExpander"] summary::marker {{
+            display: none !important;
+        }}
+        /* Cria nosso próprio ícone de seta customizado */
+        [data-testid="stExpander"] summary::before {{
+            content: '▶'; /* Seta Unicode simples e confiável */
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-gold);
+            font-size: 0.8em;
+            transition: transform 0.2s ease-in-out;
+        }}
+        /* Gira nossa seta quando o expander está aberto */
+        [data-testid="stExpander"][aria-expanded="true"] summary::before {{
+            transform: translateY(-50%) rotate(90deg);
         }}
 
         /* ==================== CAMPOS DE ENTRADA MÍSTICOS ==================== */
@@ -2180,15 +2194,13 @@ def page_payment():
             metadata=metadata,
         )
 
-        # --- A CORREÇÃO FINAL FINALÍSSIMA ---
-        # Trocamos para target="_blank" para forçar a abertura em uma nova guia,
-        # contornando a interceptação de eventos do Streamlit.
-        payment_link_html = f"""
-            <a href="{checkout_session.url}" target="_blank" class="payment-button-container" style="text-decoration: none;">
-                Pagar e Cruzar o Portal para a Revelação
-            </a>
-        """
-        st.markdown(payment_link_html, unsafe_allow_html=True)
+        # --- CORREÇÃO FINAL: USANDO st.link_button ---
+        # Este componente nativo é a maneira mais robusta de criar um link de navegação.
+        st.link_button(
+            label="Pagar e Cruzar o Portal para a Revelação",
+            url=checkout_session.url,
+            use_container_width=True
+        )
 
     except Exception as e:
         st.error(f"Ocorreu um erro ao preparar o portal de pagamento: {e}")
