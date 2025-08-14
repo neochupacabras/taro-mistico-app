@@ -2150,7 +2150,6 @@ def page_payment():
         mystical_divider()
 
     try:
-        # Cria a sessão do Stripe e obtém a URL de checkout
         host_url = st.secrets["app"]["base_url"]
         spread_choice = sel.get("spread_choice", "Consulta Padrão")
         user_name_for_stripe = sel.get("user_name", "Viajante")
@@ -2176,9 +2175,10 @@ def page_payment():
             metadata=metadata,
         )
 
-        # Renderiza um link <a> estilizado como um botão
+        # --- A CORREÇÃO FINAL E DEFINITIVA ---
+        # Trocamos target="_self" por target="_top" para "quebrar" o iframe do Streamlit Cloud
         payment_link_html = f"""
-            <a href="{checkout_session.url}" target="_self" class="payment-button-container" style="text-decoration: none;">
+            <a href="{checkout_session.url}" target="_top" class="payment-button-container" style="text-decoration: none;">
                 Pagar e Cruzar o Portal para a Revelação
             </a>
         """
@@ -2188,7 +2188,6 @@ def page_payment():
         st.error(f"Ocorreu um erro ao preparar o portal de pagamento: {e}")
         st.warning("Por favor, tente voltar e refazer sua configuração.")
 
-    # Botão de "Voltar" com espaçamento
     st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("⬅ Voltar e Alterar Intenção", use_container_width=True, key="back_to_configure_button"):
         st.session_state.app_step = 'configure'
