@@ -2069,6 +2069,7 @@ def display_business_info():
 # ==============================================================================
 
 def page_welcome():
+    # --- Seção Principal ---
     with st.container(border=True):
         st.header("✨ Adentre o Santuário")
         st.markdown(
@@ -2086,7 +2087,6 @@ def page_welcome():
     if st.button("🌟 Iniciar Jornada Mística", use_container_width=True):
         user_name_input = st.session_state.get("user_name", "").strip()
         if user_name_input:
-            # Garante que o snapshot sempre terá o nome, preservando outros dados se existirem
             st.session_state.selected = {
                 "user_name": user_name_input,
                 **st.session_state.get("selected", {})
@@ -2096,6 +2096,12 @@ def page_welcome():
         else:
             st.warning("O Oráculo aguarda seu nome para criar a conexão.")
 
+    # <<< CORREÇÃO PRINCIPAL: ADICIONANDO O ESPAÇADOR >>>
+    # Este container vazio cria o espaço "em branco" (sem fundo roxo) que você quer.
+    with st.container():
+        st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True) # Apenas para garantir um espaçamento mínimo
+
+    # --- Seção de Políticas (agora visualmente separada) ---
     display_business_info()
 
 
