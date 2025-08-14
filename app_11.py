@@ -2191,6 +2191,16 @@ def page_payment():
 
 
 def page_result():
+    # <<< VERIFICAÇÃO DE SEGURANÇA >>>
+    if not st.session_state.get('payment_verified'):
+        st.error("Acesso não autorizado.")
+        st.warning("Por favor, inicie uma nova consulta e complete o pagamento para ver sua revelação.")
+        if st.button("Voltar ao Início"):
+            reset_journey()
+            st.rerun()
+        st.stop() # Interrompe a execução da página
+    # <<< FIM DA VERIFICAÇÃO >>>
+
     # A lógica de verificação do Stripe já restaurou o estado.
     # Apenas lemos o estado confiável para exibir a página.
     user_name = st.session_state.get("user_name", "Viajante")
