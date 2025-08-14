@@ -105,27 +105,17 @@ def apply_mystical_theme():
         }}
 
         /* ==================== CONTAINERS E CARDS MÍSTICOS ==================== */
-        /* <<< CORREÇÃO PRINCIPAL: REMOÇÃO DA REGRA ANTIGA E CRIAÇÃO DE UMA NOVA CLASSE >>> */
-
-        /* 1. REMOVEMOS a regra que não funcionava bem na nuvem */
-        /* [data-testid="stVerticalBlockBorderWrapper"] {{ ... }} FOI REMOVIDA */
-
-        /* 2. CRIAMOS uma classe nova e confiável, baseada no estilo do header que já funciona */
-        .mystical-container, .header-container {{
+        /* <<< ESTA É A CORREÇÃO PRINCIPAL E DEFINITIVA >>>
+           Esta regra única agora se aplica tanto ao seu cabeçalho quanto
+           a todos os containers criados com st.container(border=True). */
+        .header-container, [data-testid="stVerticalBlockBorderWrapper"] {{
             background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow) !important;
-            padding: 1.5rem !important; /* Aumentamos um pouco o padding para o conteúdo respirar */
+            padding: 1.5rem !important;
             margin: 1rem 0 !important;
-        }}
-
-        /* 3. A borda do st.container(border=True) fica invisível */
-        [data-testid="stVerticalBlockBorderWrapper"] {{
-            border: none !important;
-            background: transparent !important;
-            padding: 0 !important;
-            margin: 0 !important;
+            backdrop-filter: blur(5px);
         }}
 
         /* ==================== BOTÕES MÍSTICOS AVANÇADOS ==================== */
@@ -1970,7 +1960,6 @@ def page_test_harness():
 # ==============================================================================
 
 def page_welcome():
-    st.html("<div class='mystical-container'>")
     with st.container(border=True):
         st.header("✨ Adentre o Santuário")
         st.markdown(
@@ -1984,7 +1973,6 @@ def page_welcome():
             key="user_name",
             placeholder="Seu nome ou apelido místico..."
         )
-    st.html("<div class='mystical-container'>")
 
     if st.button("🌟 Iniciar Jornada Mística", use_container_width=True):
         user_name_input = st.session_state.get("user_name", "").strip()
@@ -2004,7 +1992,6 @@ def page_configure():
     # Lê o nome do snapshot, que é a fonte confiável
     user_name = st.session_state.selected.get("user_name", "Viajante")
 
-    st.html("<div class='mystical-container'>")
     with st.container(border=True):
         st.header(f"Passo 1: A Intenção, {user_name}")
         st.markdown("Escolha as ferramentas que guiarão sua consulta. Cada escolha molda a energia da sua leitura.")
@@ -2039,8 +2026,7 @@ def page_configure():
             with st.expander("Clique para entender os diferentes tons do Oráculo"):
                 st.markdown(f"#### {reading_style}")
                 st.write(STYLE_EXPLANATIONS[reading_style])
-    st.html("</div>")
-        # --------------------------------------------------------------
+            # --------------------------------------------------------------
 
     if st.button("Confirmar Intenção e Preparar o Oráculo ➡", use_container_width=True, key="to_payment_button"):
         # A lógica de snapshot robusta que já funciona
@@ -2065,7 +2051,6 @@ def page_payment():
     sel = st.session_state.get("selected", {})
     user_name = sel.get("user_name", "Viajante")
 
-    st.html("<div class='mystical-container'>") # << ABRIR DIV
     with st.container(border=True):
         st.header(f"Passo 2: O Portal de Pagamento")
         st.markdown(f"Sua intenção foi recebida, **{user_name}**. As cartas foram consagradas à sua energia. A revelação aguarda do outro lado do portal.")
@@ -2078,7 +2063,6 @@ def page_payment():
             st.markdown(f'**- Foco:** `{sel["question"]}`')
 
         mystical_divider()
-    st.html("</div>")
 
     try:
         host_url = st.secrets["app"]["base_url"]
@@ -2164,7 +2148,6 @@ def page_result():
             st.session_state.drawn_cards = drawn_cards
             st.session_state.final_interpretation = get_interpretation(drawn_cards, spread_positions, question, reading_style, api_key=api_key_secreta)
 
-    st.html("<div class='mystical-container'>")
     with st.container(border=True):
         st.header(f"Sua Revelação Sagrada, {user_name}")
         st.subheader(f"Leitura: {st.session_state.spread_choice}")
@@ -2194,17 +2177,13 @@ def page_result():
                     cols = st.columns(num_cards_in_row)
                     for j, item in enumerate(row_cards):
                         display_card(item, row_positions[j], cols[j])
-    st.html("</div>")
 
 
-    st.html("<div class='mystical-container'>")
     with st.container(border=True):
         mystical_divider()
         st.subheader("A Interpretação do Oráculo:")
         st.markdown(st.session_state.final_interpretation)
-    st.html("</div>")
 
-    st.html("<div class='mystical-container'>")
     with st.container(border=True):
         mystical_divider()
 
@@ -2229,7 +2208,6 @@ def page_result():
             use_container_width=True
         )
         st.button("Iniciar uma Nova Jornada", on_click=reset_journey, use_container_width=True)
-    st.html("</div>")
 
 # --- ROTEADOR PRINCIPAL ---
 st.html("""
