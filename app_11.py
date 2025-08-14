@@ -116,8 +116,8 @@ def apply_mystical_theme():
             margin: 1rem 0 !important;
         }}
 
-        /* SOLUÇÃO 1: Abordagem direta (mais compatível com Streamlit Cloud) */
-        [data-testid="stVerticalBlockBorderWrapper"] {{
+        /* SOLUÇÃO CORRIGIDA: Usando o seletor correto para containers com bordas arredondadas */
+        .stVerticalBlock[style*="border-radius"] {{
             background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
@@ -128,33 +128,22 @@ def apply_mystical_theme():
             position: relative !important;
         }}
 
-        /* SOLUÇÃO 2: Fallback usando ::after (caso a primeira não funcione) */
-        [data-testid="stVerticalBlockBorderWrapper"]::after {{
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+        /* Alternativa: Todos os .stVerticalBlock (caso o filtro acima não funcione) */
+        .stVerticalBlock {{
             background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow) !important;
-            backdrop-filter: blur(5px);
-            z-index: 0; /* Mudança crítica: de -1 para 0 */
-            pointer-events: none;
+            backdrop-filter: blur(5px) !important;
+            padding: 1.5rem !important;
+            margin: 1rem 0 !important;
+            position: relative !important;
         }}
 
         /* Garantir que o conteúdo dos containers fique visível */
-        [data-testid="stVerticalBlockBorderWrapper"] > div {{
+        .stVerticalBlock > div {{
             position: relative !important;
             z-index: 1 !important;
-        }}
-
-        /* SOLUÇÃO 3: Forçar visibilidade com classes específicas */
-        .stVerticalBlock, .element-container {{
-            position: relative !important;
-            z-index: 2 !important;
         }}
 
         /* ==================== BOTÕES MÍSTICOS AVANÇADOS ==================== */
@@ -306,46 +295,11 @@ def apply_mystical_theme():
             visibility: visible !important;
         }}
 
-        /* ==================== CSS DE DEBUG EXPANDIDO (REMOVER APÓS TESTES) ==================== */
-        /* Testando todos os possíveis seletores de container */
-        [data-testid="stVerticalBlockBorderWrapper"] {{
-            border: 3px solid red !important;
-            background-color: rgba(255, 0, 0, 0.3) !important;
-        }}
-
-        [data-testid="stVerticalBlock"] {{
-            border: 3px solid blue !important;
-            background-color: rgba(0, 0, 255, 0.3) !important;
-        }}
-
+        /* ==================== CSS DE DEBUG SIMPLIFICADO (REMOVER APÓS TESTES) ==================== */
+        /* Agora só testando o seletor correto */
         .stVerticalBlock {{
-            border: 3px solid green !important;
-            background-color: rgba(0, 255, 0, 0.3) !important;
-        }}
-
-        [data-testid="block-container"] {{
-            border: 3px solid purple !important;
-            background-color: rgba(128, 0, 128, 0.3) !important;
-        }}
-
-        .block-container {{
-            border: 3px solid orange !important;
-            background-color: rgba(255, 165, 0, 0.3) !important;
-        }}
-
-        [data-testid="stContainer"] {{
-            border: 3px solid pink !important;
-            background-color: rgba(255, 192, 203, 0.3) !important;
-        }}
-
-        .element-container {{
-            border: 1px dashed yellow !important;
-        }}
-
-        /* Containers criados com st.container() */
-        div[data-stale="false"] > div > div {{
-            border: 2px solid cyan !important;
-            background-color: rgba(0, 255, 255, 0.3) !important;
+            border: 3px solid lime !important;
+            background-color: rgba(46, 26, 71, 0.95) !important;
         }}
     </style>
     """)
