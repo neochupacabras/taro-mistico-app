@@ -2096,7 +2096,7 @@ def page_configure():
         # -----------------------------------------------------------------
 
         mystical_divider(margin="1rem 0")
-        st.text_area("❓ Em seguida, concentre-se em seu foco (opcional):", placeholder="Ex: 'Qual energia devo focar na minha carreira?'", key="question")
+        st.text_area("❓ Em seguida, concentre-se em seu foco. Faça uma pergunta (opcional):", placeholder="Ex: 'Qual caminho profissional devo seguir?'", key="question")
         mystical_divider(margin="1rem 0")
         st.selectbox("✨ Por fim, escolha o tom da voz do Oráculo:", list(STYLE_EXPLANATIONS.keys()), key="reading_style")
 
