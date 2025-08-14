@@ -6,6 +6,9 @@ from datetime import datetime
 from fpdf import FPDF, XPos, YPos
 import unicodedata
 import base64
+import stripe
+from uuid import uuid4
+import re
 
 # ==============================================================================
 # 1. ESTILO E FUNÇÕES DE TEMA
@@ -116,6 +119,30 @@ def apply_mystical_theme():
             padding: 1rem 1.5rem !important; /* Ajuste no padding vertical */
             margin: 1rem 0 !important;
             text-align: center;
+        }}
+
+        /* ==================== BARRA LATERAL DE DIAGNÓSTICO ==================== */
+        [data-testid="stSidebar"] {{
+            background: linear-gradient(180deg, var(--deep-purple) 0%, var(--dark-bg) 100%) !important;
+            border-right: var(--border-mystical) !important;
+            padding: 1rem; /* Adiciona um respiro nas bordas */
+        }}
+
+        /* Garante que o texto DENTRO da barra lateral seja legível */
+        [data-testid="stSidebar"] div,
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] span,
+        [data-testid="stSidebar"] li,
+        [data-testid="stSidebar"] label {{
+            color: var(--text-light) !important;
+            background-color: transparent !important; /* Remove fundos indesejados de widgets */
+        }}
+
+        [data-testid="stSidebar"] h1,
+        [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3 {{
+            color: var(--primary-gold) !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7) !important;
         }}
 
         /* ==================== BOTÕES MÍSTICOS AVANÇADOS ==================== */
@@ -260,8 +287,19 @@ def apply_mystical_theme():
             transform: translateY(-5px) scale(1.03) !important;
         }}
 
-        button[aria-label="View fullscreen"] {{
-            display: none !important;
+        /* --- CORREÇÃO ROBUSTA PARA O BOTÃO FULLSCREEN --- */
+        /* Remove qualquer botão/overlay de fullscreen nas imagens do Streamlit */
+        [data-testid="stImage"] button,
+        [data-testid="stImage"] [data-testid="StyledFullScreenButton"],
+        [data-testid="stImage"] [data-testid="stFullScreenButton"],
+        button[aria-label="View fullscreen"],
+        button[title="View fullscreen"],
+        div[title="View fullscreen"] {{
+          display: none !important;
+        }}
+        /* Remove o contêiner clicável que pode sobrar */
+        [data-testid="stImage"] div[role="button"] {{
+          display: none !important;
         }}
 
         /* ==================== EFEITOS ESPECIAIS ==================== */
@@ -326,6 +364,11 @@ def mystical_divider(margin="2rem 0"):
 st.set_page_config(page_title="🔮 Tarô Místico", page_icon="🔮", layout="centered", initial_sidebar_state="collapsed")
 apply_mystical_theme()
 
+# --- NOVA LINHA ---
+# Inicializa a chave do snapshot para garantir que ela sempre exista.
+if "selected" not in st.session_state:
+    st.session_state.selected = {}
+
 if 'app_step' not in st.session_state:
     st.session_state.app_step = 'welcome'
 
@@ -333,27 +376,33 @@ query_params = st.query_params
 stripe_session_id = query_params.get("session_id")
 
 # Se um session_id está na URL, o usuário está voltando do pagamento.
-# Vamos verificar antes de fazer qualquer outra coisa.
 if stripe_session_id and 'payment_verified' not in st.session_state:
     try:
         stripe.api_key = st.secrets["stripe"]["secret_key"]
         session = stripe.checkout.Session.retrieve(stripe_session_id)
 
-        # Verificação crucial: o pagamento foi bem-sucedido?
         if session.payment_status == "paid":
-            # Segurança extra: o ID da URL corresponde ao que guardamos na sessão?
-            if stripe_session_id == st.session_state.get('stripe_session_id'):
-                st.session_state.payment_verified = True
-                st.session_state.app_step = 'result'
-                st.query_params.clear() # Limpa a URL
-                st.rerun() # Pula para a página de resultados
-            else:
-                st.error("Inconsistência na sessão de pagamento.")
-                st.session_state.app_step = 'welcome'
+            meta = session.metadata or {}
+
+            # Reconstrói o snapshot a partir do Stripe
+            st.session_state.selected = {
+                "spread_choice": meta.get("spread_choice"),
+                "reading_style": meta.get("reading_style"),
+                "question": meta.get("question", ""),
+                "user_name": meta.get("user_name"),
+            }
+
+            # Atualiza o estado principal
+            st.session_state.user_name = meta.get("user_name")
+
+            st.session_state.payment_verified = True
+            st.session_state.app_step = 'result'
+            st.query_params.clear()
+            st.rerun()
         else:
             st.warning("O pagamento não foi concluído. Por favor, tente novamente.")
             st.session_state.app_step = 'payment'
-            st.query_params.clear() # Limpa a URL
+            st.query_params.clear()
             st.rerun()
 
     except Exception as e:
@@ -363,6 +412,8 @@ if stripe_session_id and 'payment_verified' not in st.session_state:
 # ==============================================================================
 # 3. DADOS E FUNÇÕES PRINCIPAIS
 # ==============================================================================
+
+# --- DADOS (DECK, SPREAD_EXPLANATIONS, STYLE_EXPLANATIONS) ---
 
 # --- DADOS (DECK, SPREAD_EXPLANATIONS, STYLE_EXPLANATIONS) ---
 
@@ -1623,6 +1674,7 @@ STYLE_EXPLANATIONS = {
     "Poética e Introspectiva": "Transforma a leitura em uma narrativa sensível e literária, com ricas metáforas e imagens. Convida à contemplação e à conexão com a beleza das palavras, abrindo espaço para um significado subjetivo e artístico. A melhor escolha para quem aprecia leituras que tocam o coração e despertam a imaginação."
 }
 
+
 # --- FUNÇÕES DA APLICAÇÃO ---
 
 def get_image_filename(card_name):
@@ -1740,10 +1792,14 @@ class MysticalPDF(FPDF):
         self.ln(5)
 
 
-def create_reading_pdf(user_name, question, spread_choice, interpretation, drawn_cards, spread_positions):
+def create_reading_pdf(sel, interpretation, drawn_cards, spread_positions):
+    # Extrai os dados de dentro do snapshot 'sel'
+    user_name = sel.get("user_name", "Viajante")
+    question = sel.get("question", "")
+    spread_choice = sel.get("spread_choice", "")
+
     pdf = MysticalPDF('P', 'mm', 'A4')
     try:
-        # CORREÇÃO: Parâmetro `uni=True` removido de todas as chamadas
         pdf.add_font('Cinzel', 'B', 'fonts/Cinzel-Bold.ttf')
         pdf.add_font('CormorantGaramond', '', 'fonts/CormorantGaramond-Regular.ttf')
         pdf.add_font('CormorantGaramond', 'I', 'fonts/CormorantGaramond-Italic.ttf')
@@ -1753,24 +1809,32 @@ def create_reading_pdf(user_name, question, spread_choice, interpretation, drawn
         pdf.add_page()
         pdf.set_font("Helvetica", '', 12)
         pdf.cell(0, 10, "Erro: Fontes personalizadas nao encontradas.")
-        return pdf.output(dest='S')
+        return pdf.output()
 
-    pdf.mystical_title(f"Sua Revelação, {user_name}")
+    clean_user_name = strip_emojis(user_name)
+    clean_question = strip_emojis(question)
+    clean_spread_choice = strip_emojis(spread_choice)
+    clean_interpretation = strip_emojis(interpretation)
+
+    pdf.mystical_title(f"Sua Revelação, {clean_user_name}")
     pdf.chapter_title("Foco da Consulta")
-    pdf.chapter_body(question if question else "Uma orientação geral para o momento presente.")
+    pdf.chapter_body(clean_question if clean_question else "Uma orientação geral para o momento presente.")
     pdf.chapter_title("Tipo de Tiragem")
-    pdf.chapter_body(spread_choice)
+    pdf.chapter_body(clean_spread_choice)
     pdf.mystical_divider()
     pdf.chapter_title("As Cartas Reveladas")
     for i, item in enumerate(drawn_cards):
         if pdf.get_y() > pdf.h - 70:
             pdf.add_page()
             pdf.chapter_title("As Cartas Reveladas (continuação)")
-        pdf.draw_card_details(item, spread_positions[i])
+        clean_position = strip_emojis(spread_positions[i])
+        pdf.draw_card_details(item, clean_position)
     pdf.mystical_divider()
     pdf.chapter_title("A Interpretação do Oráculo")
-    pdf.write_markdown_body(interpretation)
-    return pdf.output(dest='S')
+    pdf.write_markdown_body(clean_interpretation)
+
+    return pdf.output()
+
 
 def draw_cards(num_cards):
     drawn_cards_info = []
@@ -1852,25 +1916,43 @@ def get_interpretation(cards_drawn, spread_positions, question, style, api_key):
         return f"Ocorreu um erro ao contatar o oráculo digital: {e}"
 
 def display_card(card_item, position_text, container):
-    """Exibe uma única carta com a classe de animação."""
+    """Exibe uma única carta usando HTML puro, incluindo as palavras-chave."""
     with container:
-        # A animação é aplicada no container da imagem
         card = card_item["card"]
-        image_path = os.path.join("images", card["image_file"])
-        if os.path.exists(image_path):
-            st.markdown(f'<div class="card-reveal">', unsafe_allow_html=True)
-            st.image(image_path, use_container_width=True, caption=f"{card['name']}{' (Invertida)' if card_item['is_reversed'] else ''}")
-            st.markdown(f'</div>', unsafe_allow_html=True)
+        caption = f"{card['name']}{' (Invertida)' if card_item['is_reversed'] else ''}"
+        image_local_path = os.path.join("images", card["image_file"])
 
+        base64_img = get_img_as_base64(image_local_path)
+
+        if base64_img:
+            img_src = f"data:image/png;base64,{base64_img}"
+
+            # --- CORREÇÃO: ADICIONA AS PALAVRAS-CHAVE ---
             keywords_str = ", ".join(card.get("keywords", []))
-            st.markdown(f"<p class='card-keywords'>{keywords_str}</p>", unsafe_allow_html=True)
+
+            st.html(f"""
+                <div class="card-reveal">
+                    <figure style="margin:0; text-align:center;">
+                        <img src="{img_src}" alt="{caption}"
+                             style="width:100%; height:auto; border-radius:15px;
+                                    border:3px solid var(--primary-gold);
+                                    box-shadow:0 10px 30px rgba(0,0,0,.5);" />
+                        <figcaption style="margin-top:.5rem; color:var(--secondary-gold); font-family:'Cinzel',serif; font-weight:600; font-size:1.1rem; text-shadow: 1px 1px 3px #000;">
+                            {caption}
+                        </figcaption>
+                    </figure>
+                    <!-- Adiciona o parágrafo com as palavras-chave -->
+                    <p style="text-align:center; font-style:italic; font-size:0.9rem; color:var(--text-muted); margin-top:0.5rem; text-shadow:none;">
+                        {keywords_str}
+                    </p>
+                </div>
+            """)
         else:
             st.warning(f"Imagem {card['image_file']} não encontrada.")
-            st.markdown(f"**{card['name']}**{' (Invertida)' if card_item['is_reversed'] else ''}")
+            st.markdown(f"**{caption}**")
 
 for card in DECK:
     card['image_file'] = get_image_filename(card['name'])
-
 
 def reset_journey():
     """Limpa o estado da sessão para iniciar uma nova consulta."""
@@ -1878,34 +1960,83 @@ def reset_journey():
         'drawn_cards',
         'final_interpretation',
         'spread_positions',
-        'question',
-        'reading_style',
-        'spread_choice',
-        'test_mode_activated'  # Limpa a flag de teste também
+        'question',           # Mantido por segurança, embora 'selected' seja o principal
+        'reading_style',      # Mantido por segurança
+        'spread_choice',      # Mantido por segurança
+        'selected',           # A chave do snapshot
+        'payment_in_progress',# A flag de controle
+        'payment_verified',   # Status do pagamento
+        'stripe_session_id',  # ID da sessão de pagamento
+        'test_mode_activated'
     ]
     for key in keys_to_clear:
         if key in st.session_state:
             del st.session_state[key]
     st.session_state.app_step = 'welcome'
 
+
+def strip_emojis(text):
+    """Remove caracteres emoji de uma string."""
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F1E0-\U0001F1FF"  # flags (iOS)
+        "\U00002702-\U000027B0"
+        "\U000024C2-\U0001F251"
+        "]+",
+        flags=re.UNICODE,
+    )
+    return emoji_pattern.sub(r"", text)
+
+
+def get_current_user_name():
+    """Obtém o nome de usuário da fonte mais confiável (estado da sessão ou snapshot)."""
+    sel = st.session_state.get("selected", {}) or {}
+    # Prioriza o nome já no session_state, depois o do snapshot, e por último o fallback.
+    name = (st.session_state.get("user_name")
+            or sel.get("user_name")
+            or "Viajante")
+    return name.strip()
+
+
+def full_reset():
+    """Limpa COMPLETAMENTE o estado da sessão para um novo teste."""
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.session_state.app_step = 'welcome'
+    st.rerun()
+
+def page_test_harness():
+    """Exibe um painel de diagnóstico na barra lateral."""
+    with st.sidebar:
+        st.header("🕵️‍♂️ Painel de Diagnóstico")
+        st.markdown("---")
+
+        st.subheader("Passo Atual")
+        st.write(f"`{st.session_state.get('app_step', 'Não definido')}`")
+
+        st.subheader("`st.session_state.user_name`")
+        st.info(f"""
+        Valor direto da chave 'user_name': `{st.session_state.get('user_name', 'NÃO EXISTE')}`
+        """)
+
+        st.subheader("`st.session_state.selected`")
+        st.markdown("Este é o nosso 'snapshot' estável. Ele deve conter os dados em todas as etapas após a configuração.")
+        st.json(st.session_state.get('selected', {"status": "Ainda não criado"}))
+
+        st.markdown("---")
+        st.warning("Use o botão abaixo para forçar um reset total e começar um novo teste do zero.")
+        if st.button("🔴 RESET TOTAL DA SESSÃO 🔴", use_container_width=True):
+            full_reset()
+
+
 # ==============================================================================
-# 4. ÁREA PRINCIPAL COM FLUXO GUIADO E NOVO ESTILO
+# 4. ÁREA PRINCIPAL COM FLUXO GUIADO (ESTRUTURA CORRIGIDA)
 # ==============================================================================
 
-st.html("""
-<div class="header-container">
-    <h1 class="main-title">Tarô Místico</h1>
-    <p style='text-align: center; font-style: italic; font-size: 1.1rem; margin-top: -1rem; margin-bottom: 0;'>Um portal para o autoconhecimento através dos arquétipos universais</p>
-    <div style="text-align: center; margin: 1rem 0;">
-        <div style="font-size: 1.5rem; color: #d4af37; opacity: 0.8; animation: pulse 2s ease-in-out infinite alternate;">
-            ⟡ ◦ ❋ ◦ ⟡
-        </div>
-    </div>
-</div>
-""")
-
-# PASSO 1: BOAS-VINDAS E NOME
-if st.session_state.app_step == 'welcome':
+def page_welcome():
     with st.container(border=True):
         st.header("✨ Adentre o Santuário")
         st.markdown(
@@ -1919,99 +2050,59 @@ if st.session_state.app_step == 'welcome':
             key="user_name",
             placeholder="Seu nome ou apelido místico..."
         )
+
     if st.button("🌟 Iniciar Jornada Mística", use_container_width=True):
-        if st.session_state.user_name:
+        user_name_input = st.session_state.get("user_name", "").strip()
+        if user_name_input:
+            # Garante que o snapshot sempre terá o nome, preservando outros dados se existirem
+            st.session_state.selected = {
+                "user_name": user_name_input,
+                **st.session_state.get("selected", {})
+            }
             st.session_state.app_step = 'configure'
             st.rerun()
         else:
             st.warning("O Oráculo aguarda seu nome para criar a conexão.")
 
-# PASSO 2: CONFIGURAÇÃO DA LEITURA
-elif st.session_state.app_step == 'configure':
-    user_name = st.session_state.get("user_name", "Viajante")
+def page_configure():
+    user_name = st.session_state.selected.get("user_name", "Viajante")
 
     with st.container(border=True):
         st.header(f"Passo 1: A Intenção, {user_name}")
         st.markdown("Escolha as ferramentas que guiarão sua consulta. Cada escolha molda a energia da sua leitura.")
+        mystical_divider(margin="1rem 0")
 
-        mystical_divider(margin="0.2rem 0")
-
-        # --- Seção 1: Tipo de Tiragem ---
         spread_options = {
-            "Conselho do Dia (1 carta)": 1,
-            "Passado, Presente e Futuro (3 cartas)": 3,
-            "Tiragem Temática (3 cartas)": 3,
-            "Cruz Celta (10 cartas)": 10,
-            "Caminhos da Decisão (4 cartas)": 4,
-            "Conselho Espiritual (3 cartas)": 3,
+            "Conselho do Dia (1 carta)": 1, "Passado, Presente e Futuro (3 cartas)": 3, "Tiragem Temática (3 cartas)": 3,
+            "Cruz Celta (10 cartas)": 10, "Caminhos da Decisão (4 cartas)": 4, "Conselho Espiritual (3 cartas)": 3,
             "Jornada do Autoconhecimento (5 cartas)": 5
         }
         st.selectbox("🔮 Primeiro, escolha o tipo de tiragem:", list(spread_options.keys()), key="spread_choice")
-
-        spread_choice = st.session_state.get("spread_choice", "Conselho do Dia (1 carta)")
-        explanation = SPREAD_EXPLANATIONS.get(spread_choice)
-        if explanation:
-            with st.expander("Saiba mais sobre esta tiragem"):
-                st.subheader(explanation['title'])
-                st.markdown(f"**Propósito:** {explanation['purpose']}")
-
-        # --- Adicionando o primeiro divisor ---
-        mystical_divider(margin="0.2rem 0")
-
-        # --- Seção 2: Foco da Consulta ---
+        mystical_divider(margin="1rem 0")
         st.text_area("❓ Em seguida, concentre-se em seu foco (opcional):", placeholder="Ex: 'Qual energia devo focar na minha carreira?'", key="question")
-
-        # --- Adicionando o segundo divisor ---
-        mystical_divider(margin="0.2rem 0")
-
-        # --- Seção 3: Tom do Oráculo ---
+        mystical_divider(margin="1rem 0")
         st.selectbox("✨ Por fim, escolha o tom da voz do Oráculo:", list(STYLE_EXPLANATIONS.keys()), key="reading_style")
 
-        reading_style = st.session_state.get("reading_style", "Mística e Inspiradora")
-        if reading_style in STYLE_EXPLANATIONS:
-            with st.expander("Clique aqui para entender os diferentes tons do Oráculo"):
-                st.markdown(f"#### {reading_style}")
-                st.write(STYLE_EXPLANATIONS[reading_style])
-
-    if st.button("Confirmar Intenção e Preparar o Oráculo ➡", use_container_width=True):
+    if st.button("Confirmar Intenção e Preparar o Oráculo ➡", use_container_width=True, key="to_payment_button"):
+        # --- CORREÇÃO DEFINITIVA ---
+        # Recria o snapshot, desempacotando o antigo para preservar o nome
+        # e adicionando/sobrescrevendo com as novas escolhas.
+        current_snapshot = st.session_state.get("selected", {})
+        st.session_state.selected = {
+            **current_snapshot,
+            "spread_choice": st.session_state.get("spread_choice"),
+            "reading_style": st.session_state.get("reading_style"),
+            "question": (st.session_state.get("question") or "").strip(),
+        }
         st.session_state.app_step = 'payment'
         st.rerun()
 
-# ======================= INÍCIO DO NOVO CÓDIGO =======================
-# NOVO PASSO: PAINEL DE TESTE PARA DESENVOLVIMENTO
-elif st.session_state.app_step == 'test_harness':
-    with st.container(border=True):
-        st.warning("### ⚡ MODO DE DESENVOLVIMENTO ⚡")
-        st.markdown("Use os controles abaixo para simular uma consulta e testar a tela de resultados.")
 
-        # Reutilizamos os mesmos widgets da tela de configuração
-        spread_options = {
-            "Conselho do Dia (1 carta)": 1,
-            "Passado, Presente e Futuro (3 cartas)": 3,
-            "Tiragem Temática (3 cartas)": 3,
-            "Cruz Celta (10 cartas)": 10,
-            "Caminhos da Decisão (4 cartas)": 4,
-            "Conselho Espiritual (3 cartas)": 3,
-            "Jornada do Autoconhecimento (5 cartas)": 5
-        }
-        st.selectbox("🔮 **Tipo de Tiragem para o Teste:**", list(spread_options.keys()), key="spread_choice")
-        st.text_area("❓ **Foco do Teste (opcional):**", placeholder="Qualquer pergunta para o teste...", key="question")
-        st.selectbox("✨ **Tom do Oráculo para o Teste:**", list(STYLE_EXPLANATIONS.keys()), key="reading_style")
-        st.text_input("👤 **Nome do Usuário para o Teste:**", value="Viajante Místico", key="user_name")
-
-    if st.button("Gerar Resultado de Teste Direto ➡", use_container_width=True):
-        # As chaves 'spread_choice', 'question', etc., foram preenchidas pelos widgets acima.
-        # Agora podemos pular para o resultado com segurança.
-        st.session_state.app_step = 'result'
-        st.rerun()
-# ======================== FIM DO NOVO CÓDIGO =========================
-
-# PASSO 3: CONFIRMAÇÃO E PAGAMENTO
-elif st.session_state.app_step == 'payment':
-    # Configura a chave da API do Stripe a partir dos segredos
+def page_payment():
     stripe.api_key = st.secrets["stripe"]["secret_key"]
-
-    user_name = st.session_state.get("user_name", "Viajante")
+    # A única fonte de verdade para as escolhas é o 'selected' snapshot
+    sel = st.session_state.get("selected", {})
+    user_name = sel.get("user_name", "Viajante")
 
     with st.container(border=True):
         st.header(f"Passo 2: O Portal de Pagamento")
@@ -2019,57 +2110,74 @@ elif st.session_state.app_step == 'payment':
         mystical_divider()
 
         st.subheader("Resumo da sua Consulta:")
-        st.markdown(f'**- Tipo de Tiragem:** `{st.session_state.get("spread_choice", "N/A")}`')
-        st.markdown(f'**- Estilo de Leitura:** `{st.session_state.get("reading_style", "N/A")}`')
-        if st.session_state.get("question"):
-            st.markdown(f'**- Foco:** `{st.session_state.question}`')
+        st.markdown(f'**- Tipo de Tiragem:** `{sel.get("spread_choice", "—")}`')
+        st.markdown(f'**- Estilo de Leitura:** `{sel.get("reading_style", "—")}`')
+        if sel.get("question"):
+            st.markdown(f'**- Foco:** `{sel["question"]}`')
 
         mystical_divider()
 
-        # Botão para criar a sessão de pagamento
-        if st.button("Pagar e Cruzar o Portal para a Revelação", use_container_width=True):
-            try:
-                # URL base da sua aplicação na Streamlit Cloud
-                APP_URL = "https://taro-mistico-app-ekgvukw2wdu2xmytxbcktx.streamlit.app/" # <-- MUITO IMPORTANTE: ATUALIZE COM SEU URL REAL
+    try:
+        host_url = st.secrets["app"]["base_url"]
 
-                # Cria uma Sessão de Checkout no Stripe
-                checkout_session = stripe.checkout.Session.create(
-                    line_items=[
-                        {
-                            'price_data': {
-                                'currency': 'brl',
-                                'product_data': {
-                                    'name': f'Leitura de Tarô Místico: {st.session_state.spread_choice}',
-                                    'description': f'Uma consulta de tarô personalizada para {user_name}.',
-                                },
-                                'unit_amount': 500,  # Preço em centavos (ex: R$ 5,00)
-                            },
-                            'quantity': 1,
-                        },
-                    ],
-                    mode='payment',
-                    # URLs para onde o cliente será redirecionado
-                    success_url=f"{APP_URL}?session_id={{CHECKOUT_SESSION_ID}}",
-                    cancel_url=f"{APP_URL}",
-                )
+        # --- CORREÇÃO FUNDAMENTAL: LER DO SNAPSHOT 'sel' ---
+        spread_choice = sel.get("spread_choice", "Consulta Padrão")
+        user_name_for_stripe = sel.get("user_name", "Viajante")
 
-                # Armazena o ID da sessão para verificação posterior
-                st.session_state.stripe_session_id = checkout_session.id
+        metadata = {
+            "spread_choice": spread_choice,
+            "reading_style": sel.get("reading_style", ""),
+            "question": sel.get("question", ""),
+            "user_name": user_name_for_stripe, # Agora envia o nome correto para o Stripe
+        }
 
-                # Redireciona o usuário para o checkout do Stripe
-                st.markdown(f'<meta http-equiv="refresh" content="0; url={checkout_session.url}">', unsafe_allow_html=True)
-                st.info("Redirecionando para o portal de pagamento seguro...")
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': 'brl', 'product_data': {'name': f'Leitura de Tarô Místico: {spread_choice}', 'description': f'Uma consulta de tarô personalizada para {user_name_for_stripe}.'},
+                    'unit_amount': 500,
+                }, 'quantity': 1,
+            }],
+            mode='payment',
+            success_url=f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=host_url,
+            client_reference_id=str(uuid4()),
+            metadata=metadata,
+        )
 
-            except Exception as e:
-                st.error(f"Não foi possível conectar ao portal de pagamento: {e}")
+        payment_link_html = f"""
+            <a href="{checkout_session.url}" target="_self" class="payment-button-container" style="text-decoration: none;">
+                Pagar e Cruzar o Portal para a Revelação
+            </a>
+        """
+        st.markdown(payment_link_html, unsafe_allow_html=True)
 
-    if st.button("⬅ Voltar e Alterar Intenção"):
+    except Exception as e:
+        st.error(f"Ocorreu um erro ao preparar o portal de pagamento: {e}")
+        st.warning("Por favor, tente voltar e refazer sua configuração.")
+
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+    if st.button("⬅ Voltar e Alterar Intenção", use_container_width=True, key="back_to_configure_button"):
         st.session_state.app_step = 'configure'
         st.rerun()
 
-# PASSO 4: RESULTADO DA LEITURA
-elif st.session_state.app_step == 'result':
+
+def page_result():
+    # A lógica de verificação do Stripe já restaurou o estado.
+    # Apenas lemos o estado confiável para exibir a página.
+    user_name = st.session_state.get("user_name", "Viajante")
+
     if 'final_interpretation' not in st.session_state:
+        sel = st.session_state.get("selected", {})
+        spread_choice = sel.get("spread_choice", "Conselho do Dia (1 carta)")
+        reading_style = sel.get("reading_style", "Mística e Inspiradora")
+        question = sel.get("question", "")
+
+        # Sincroniza o resto do estado da sessão para a primeira execução
+        st.session_state.spread_choice = spread_choice
+        st.session_state.reading_style = reading_style
+        st.session_state.question = question
+
         with st.spinner("O oráculo está consultando as estrelas e tecendo sua resposta... ✨"):
             try:
                 api_key_secreta = st.secrets["openai"]["api_key"]
@@ -2077,18 +2185,8 @@ elif st.session_state.app_step == 'result':
                 st.error("Chave da API não configurada.")
                 st.stop()
 
-            spread_choice = st.session_state.get("spread_choice", "Conselho do Dia (1 carta)")
-            reading_style = st.session_state.get("reading_style", "Mística e Inspiradora")
-            question = st.session_state.get("question", "")
-
-            # LINHAS ADICIONADAS: Salva os valores de volta na sessão para que persistam após o rerun
-            st.session_state.spread_choice = spread_choice
-            st.session_state.reading_style = reading_style
-            st.session_state.question = question
-
             spread_options = {"Conselho do Dia (1 carta)": 1, "Passado, Presente e Futuro (3 cartas)": 3, "Tiragem Temática (3 cartas)": 3, "Cruz Celta (10 cartas)": 10, "Caminhos da Decisão (4 cartas)": 4, "Conselho Espiritual (3 cartas)": 3, "Jornada do Autoconhecimento (5 cartas)": 5}
-            num_cards = spread_options[spread_choice] # Agora spread_choice está garantido
-
+            num_cards = spread_options[spread_choice]
             spread_positions = []
             if spread_choice == "Conselho do Dia (1 carta)": spread_positions = ["Seu Conselho"]
             elif spread_choice == "Passado, Presente e Futuro (3 cartas)": spread_positions = ["O Passado", "O Presente", "O Futuro"]
@@ -2097,90 +2195,42 @@ elif st.session_state.app_step == 'result':
             elif spread_choice == "Caminhos da Decisão (4 cartas)": spread_positions = ["Caminho A: Situação", "Caminho A: Resultado", "Caminho B: Situação", "Caminho B: Resultado"]
             elif spread_choice == "Conselho Espiritual (3 cartas)": spread_positions = ["Lição a Aprender", "Energia a Integrar", "Bloqueio a Liberar"]
             elif spread_choice == "Jornada do Autoconhecimento (5 cartas)": spread_positions = ["Eu Exterior", "Eu Interior", "Meu Desafio", "Meu Potencial", "Equilíbrio"]
-
             st.session_state.spread_positions = spread_positions
-
             drawn_cards = draw_cards(num_cards)
             st.session_state.drawn_cards = drawn_cards
             st.session_state.final_interpretation = get_interpretation(drawn_cards, spread_positions, question, reading_style, api_key=api_key_secreta)
 
-    # --- INÍCIO DA MUDANÇA ---
-    # Criamos um único container para o título e as cartas
     with st.container(border=True):
-        user_name = st.session_state.get("user_name", "Viajante")
         st.header(f"Sua Revelação Sagrada, {user_name}")
         st.subheader(f"Leitura: {st.session_state.spread_choice}")
-
         drawn_cards = st.session_state.drawn_cards
         spread_positions = st.session_state.spread_positions
         num_cards = len(drawn_cards)
-
-        mystical_divider() # Separador visual
-
+        mystical_divider()
         if st.session_state.spread_choice == "Cruz Celta (10 cartas)":
-            st.markdown("##### O Coração da Questão")
-            cols_1_2 = st.columns(2)
-            display_card(drawn_cards[0], spread_positions[0], cols_1_2[0]) # 1. Situação Atual
-            display_card(drawn_cards[1], spread_positions[1], cols_1_2[1]) # 2. Obstáculo
-
+            st.markdown("##### O Coração da Questão"); cols_1_2 = st.columns(2); display_card(drawn_cards[0], spread_positions[0], cols_1_2[0]); display_card(drawn_cards[1], spread_positions[1], cols_1_2[1])
             mystical_divider()
-
-            st.markdown("##### As Fundações")
-            cols_3_4 = st.columns(2)
-            display_card(drawn_cards[2], spread_positions[2], cols_3_4[0]) # 3. Base
-            display_card(drawn_cards[3], spread_positions[3], cols_3_4[1]) # 4. Passado
-
+            st.markdown("##### As Fundações"); cols_3_4 = st.columns(2); display_card(drawn_cards[2], spread_positions[2], cols_3_4[0]); display_card(drawn_cards[3], spread_positions[3], cols_3_4[1])
             mystical_divider()
-
-            st.markdown("##### O Potencial e o Futuro")
-            cols_5_6 = st.columns(2)
-            display_card(drawn_cards[4], spread_positions[4], cols_5_6[0]) # 5. Objetivo
-            display_card(drawn_cards[5], spread_positions[5], cols_5_6[1]) # 6. Futuro
-
+            st.markdown("##### O Potencial e o Futuro"); cols_5_6 = st.columns(2); display_card(drawn_cards[4], spread_positions[4], cols_5_6[0]); display_card(drawn_cards[5], spread_positions[5], cols_5_6[1])
             mystical_divider()
-
-            st.markdown("##### Influências e Resultado Final")
-            cols_7_8 = st.columns(2)
-            display_card(drawn_cards[6], spread_positions[6], cols_7_8[0]) # 7. Atitude
-            display_card(drawn_cards[7], spread_positions[7], cols_7_8[1]) # 8. Ambiente
-
-            cols_9_10 = st.columns(2)
-            display_card(drawn_cards[8], spread_positions[8], cols_9_10[0]) # 9. Esperanças/Medos
-            display_card(drawn_cards[9], spread_positions[9], cols_9_10[1]) # 10. Resultado
+            st.markdown("##### Influências e Resultado Final"); cols_7_8 = st.columns(2); display_card(drawn_cards[6], spread_positions[6], cols_7_8[0]); display_card(drawn_cards[7], spread_positions[7], cols_7_8[1])
+            cols_9_10 = st.columns(2); display_card(drawn_cards[8], spread_positions[8], cols_9_10[0]); display_card(drawn_cards[9], spread_positions[9], cols_9_10[1])
         elif st.session_state.spread_choice == "Caminhos da Decisão (4 cartas)":
             col_a, col_b = st.columns(2, gap="large")
-            with col_a:
-                st.markdown("<p class='path-title'>Caminho A</p>", unsafe_allow_html=True)
-                display_card(drawn_cards[0], spread_positions[0], col_a) # Correto
-                display_card(drawn_cards[1], spread_positions[1], col_a) # Correto
-            with col_b:
-                st.markdown("<p class='path-title'>Caminho B</p>", unsafe_allow_html=True)
-                display_card(drawn_cards[2], spread_positions[2], col_b) # Correto
-                display_card(drawn_cards[3], spread_positions[3], col_b) # Correto
+            with col_a: st.markdown("<p class='path-title'>Caminho A</p>", unsafe_allow_html=True); display_card(drawn_cards[0], spread_positions[0], col_a); display_card(drawn_cards[1], spread_positions[1], col_a)
+            with col_b: st.markdown("<p class='path-title'>Caminho B</p>", unsafe_allow_html=True); display_card(drawn_cards[2], spread_positions[2], col_b); display_card(drawn_cards[3], spread_positions[3], col_b)
         else:
-            max_cards_per_row = 2
-
-            for i in range(0, num_cards, max_cards_per_row):
-                row_cards = drawn_cards[i : i + max_cards_per_row]
-                row_positions = spread_positions[i : i + max_cards_per_row]
-                num_cards_in_row = len(row_cards)
-
-                # --- INÍCIO DA LÓGICA DE PADRONIZAÇÃO ---
+            for i in range(0, num_cards, 2):
+                row_cards = drawn_cards[i:i + 2]; row_positions = spread_positions[i:i + 2]; num_cards_in_row = len(row_cards)
                 if num_cards_in_row == 1:
-                    # Se houver apenas uma carta, crie colunas fantasmas para centralizá-la
-                    # A proporção [1, 2, 1] significa: 1 parte para o espaço, 2 partes para a carta, 1 para o espaço
-                    # Isso faz com que a coluna da carta ocupe 50% da largura (2/4), como se houvesse outra carta ao lado.
-                    spacer1, card_col, spacer2 = st.columns([1, 2, 1])
-                    display_card(row_cards[0], row_positions[0], card_col)
+                    _, card_col, _ = st.columns([1, 2, 1]); display_card(row_cards[0], row_positions[0], card_col)
                 else:
-                    # Se houver 2 (ou mais) cartas, use o comportamento normal
                     cols = st.columns(num_cards_in_row)
                     for j, item in enumerate(row_cards):
                         display_card(item, row_positions[j], cols[j])
 
-    # --- FIM DA MUDANÇA ---
 
-    # O restante (interpretação, botões) fica fora, em seus próprios blocos
     with st.container(border=True):
         mystical_divider()
         st.subheader("A Interpretação do Oráculo:")
@@ -2188,24 +2238,53 @@ elif st.session_state.app_step == 'result':
 
     with st.container(border=True):
         mystical_divider()
-        pdf_byte_array = create_reading_pdf(
-            st.session_state.get("user_name", "Viajante"), st.session_state.question, st.session_state.spread_choice,
-            st.session_state.final_interpretation, st.session_state.drawn_cards, st.session_state.spread_positions
-        )
 
-        # Convertemos para 'bytes', que é o formato que o Streamlit espera
+        # Pega o snapshot, que é a fonte de verdade
+        sel = st.session_state.get("selected", {})
+        user_name = sel.get("user_name", "Viajante")
+
+        # Passa o snapshot 'sel' para a função do PDF
+        pdf_byte_array = create_reading_pdf(
+            sel,
+            st.session_state.final_interpretation,
+            st.session_state.drawn_cards,
+            st.session_state.spread_positions
+        )
         pdf_data_as_bytes = bytes(pdf_byte_array)
 
         st.download_button(
             label="📥 Baixar seu Pergaminho em PDF",
-            data=pdf_data_as_bytes, # Passamos o dado no formato correto
-            file_name=f"leitura_taro_mistico_{normalize_text(st.session_state.get('user_name', 'viajante'))}.pdf",
+            data=pdf_data_as_bytes,
+            file_name=f"leitura_taro_mistico_{normalize_text(user_name)}.pdf",
             mime="application/pdf",
             use_container_width=True
         )
+        st.button("Iniciar uma Nova Jornada", on_click=reset_journey, use_container_width=True)
 
-        st.button(
-            "Iniciar uma Nova Jornada",
-            on_click=reset_journey,
-            use_container_width=True
-        )
+# --- ROTEADOR PRINCIPAL ---
+st.html("""
+<div class="header-container">
+    <h1 class="main-title">Tarô Místico</h1>
+    <p style='text-align: center; font-style: italic; font-size: 1.1rem; margin-top: -1rem; margin-bottom: 0;'>Um portal para o autoconhecimento através dos arquétipos universais</p>
+    <div style="text-align: center; margin: 1rem 0;">
+        <div style="font-size: 1.5rem; color: #d4af37; opacity: 0.8; animation: pulse 2s ease-in-out infinite alternate;">
+            ⟡ ◦ ❋ ◦ ⟡
+        </div>
+    </div>
+</div>
+""")
+
+# --- ATIVAÇÃO DO PAINEL DE DIAGNÓSTICO ---
+# Esta função será chamada em CADA execução do script.
+
+# Lógica principal que decide qual função de página chamar
+step = st.session_state.get('app_step', 'welcome')
+
+if step == 'welcome':
+    page_welcome()
+elif step == 'configure':
+    page_configure()
+elif step == 'payment':
+    page_payment()
+elif step == 'result':
+    page_result()
