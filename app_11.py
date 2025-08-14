@@ -2150,7 +2150,7 @@ def page_configure():
 
 
 def page_payment():
-    # Verificação defensiva no início da função
+    # Verificação defensiva
     if stripe is None:
         st.error("ERRO CRÍTICO: A biblioteca de pagamento (Stripe) não está disponível. Verifique o arquivo requirements.txt.")
         st.stop()
@@ -2163,54 +2163,39 @@ def page_payment():
         st.header(f"Passo 2: O Portal de Pagamento")
         st.markdown(f"Sua intenção foi recebida, **{user_name}**. As cartas foram consagradas à sua energia. A revelação aguarda do outro lado do portal.")
         mystical_divider()
-
         st.subheader("Resumo da sua Consulta:")
         st.markdown(f'**- Tipo de Tiragem:** `{sel.get("spread_choice", "—")}`')
         st.markdown(f'**- Estilo de Leitura:** `{sel.get("reading_style", "—")}`')
         if sel.get("question"):
             st.markdown(f'**- Foco:** `{sel["question"]}`')
-
         mystical_divider()
 
     try:
         host_url = st.secrets["app"]["base_url"]
         spread_choice = sel.get("spread_choice", "Consulta Padrão")
         user_name_for_stripe = sel.get("user_name", "Viajante")
-
         metadata = {
-            "spread_choice": spread_choice,
-            "reading_style": sel.get("reading_style", ""),
-            "question": sel.get("question", ""),
-            "user_name": user_name_for_stripe,
+            "spread_choice": spread_choice, "reading_style": sel.get("reading_style", ""),
+            "question": sel.get("question", ""), "user_name": user_name_for_stripe,
         }
-
         checkout_session = stripe.checkout.Session.create(
-            line_items=[{
-                'price_data': {
-                    'currency': 'brl', 'product_data': {'name': f'Leitura de Tarô Místico: {spread_choice}', 'description': f'Uma consulta de tarô personalizada para {user_name_for_stripe}.'},
-                    'unit_amount': 500,
-                }, 'quantity': 1,
-            }],
+            line_items=[{'price_data': {'currency': 'brl', 'product_data': {'name': f'Leitura de Tarô Místico: {spread_choice}', 'description': f'Uma consulta de tarô personalizada para {user_name_for_stripe}.'}, 'unit_amount': 500}, 'quantity': 1}],
             mode='payment',
             success_url=f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=host_url,
-            client_reference_id=str(uuid4()),
-            metadata=metadata,
+            cancel_url=host_url, client_reference_id=str(uuid4()), metadata=metadata,
         )
 
-        # --- CORREÇÃO FINAL: Link <a> com target="_top" ---
+        # --- CORREÇÃO FINAL: target="_blank" com mensagem de instrução ---
         payment_link_html = f"""
-            <a href="{checkout_session.url}"
-               target="_top" rel="noopener"
-               class="payment-button-container" style="text-decoration: none;">
-               Pagar e Cruzar o Portal para a Revelação
+            <a href="{checkout_session.url}" target="_blank" rel="noopener noreferrer" class="payment-button-container" style="text-decoration: none;">
+                Pagar e Cruzar o Portal para a Revelação
             </a>
         """
         st.markdown(payment_link_html, unsafe_allow_html=True)
+        st.info("ℹ️ A página de pagamento será aberta em uma nova guia. Após concluir, você pode fechar a nova guia e retornar para esta para ver seu resultado.")
 
     except Exception as e:
         st.error(f"Ocorreu um erro ao preparar o portal de pagamento: {e}")
-        st.warning("Por favor, tente voltar e refazer sua configuração.")
 
     st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("⬅ Voltar e Alterar Intenção", use_container_width=True, key="back_to_configure_button"):
