@@ -163,7 +163,7 @@ def apply_mystical_theme():
         [data-testid="stDownloadButton"] button div {{ color: var(--primary-gold) !important; z-index: 2; position: relative; }}
         [data-testid="stDownloadButton"] button:hover div {{ color: var(--secondary-gold) !important; }}
 
-        /* ==================== EXPANDER MÍSTICO (ACORDEÃO) - VERSÃO CORRIGIDA ==================== */
+        /* ==================== EXPANDER MÍSTICO (ACORDEÃO) - VERSÃO LIMPA ==================== */
         [data-testid="stExpander"] {{
             border-color: rgba(212, 175, 55, 0.4) !important;
             transition: all 0.3s ease-in-out !important;
@@ -175,14 +175,12 @@ def apply_mystical_theme():
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important;
         }}
 
-        /* Cabeçalho do expander - sempre roxo */
+        /* Cabeçalho do expander - estilo limpo */
         [data-testid="stExpander"] summary {{
             color: var(--secondary-gold) !important;
-            font-style: italic;
-            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
-            border-radius: 8px !important;
-            padding: 0.75rem 1rem !important;
-            margin: -0.75rem -1rem 0.5rem -1rem !important;
+            font-style: italic !important;
+            background: transparent !important;
+            padding: 0.75rem !important;
         }}
 
         /* Ícone do expander */
@@ -190,19 +188,28 @@ def apply_mystical_theme():
             fill: var(--primary-gold) !important;
         }}
 
-        /* CORREÇÃO CRÍTICA: Remove fundo branco quando aberto */
+        /* CORREÇÃO: Remove qualquer fundo branco/sobreposição */
+        [data-testid="stExpander"] summary,
         [data-testid="stExpander"][open] > summary,
         [data-testid="stExpander"][open] > summary:hover,
         [data-testid="stExpander"][open] > summary:focus,
         [data-testid="stExpander"][open] > summary:active {{
-            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
-            color: var(--secondary-gold) !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            box-shadow: none !important;
+            border: none !important;
         }}
 
-        /* Garante que o conteúdo interno também tenha fundo adequado */
+        /* Remove qualquer pseudo-elemento que possa estar causando duplicação */
+        [data-testid="stExpander"] summary::before,
+        [data-testid="stExpander"] summary::after {{
+            display: none !important;
+        }}
+
+        /* Garante que o conteúdo interno tenha fundo sutil */
         [data-testid="stExpander"] > div:last-child {{
-            background: rgba(15, 15, 35, 0.3) !important;
-            border-radius: 0 0 8px 8px !important;
+            background: rgba(15, 15, 35, 0.2) !important;
+            border-radius: 8px !important;
             padding: 1rem !important;
             margin-top: 0.5rem !important;
         }}
