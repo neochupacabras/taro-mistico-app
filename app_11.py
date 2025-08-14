@@ -84,7 +84,7 @@ def apply_mystical_theme():
         h3 {{ font-size: 1.8rem !important; font-weight: 500 !important; color: var(--secondary-gold) !important; }}
 
         /* Regra de fonte segura que já corrigiu o ícone do expander */
-        .st-emotion-cache-1629p8f p, .stMarkdown p, .sttextinput_label, .sttextarea_label, .stselectbox_label, div[data-baseweb="select"] > div, [data-testid="stExpander"] summary, .stButton > button, [data-testid="stDownloadButton"] button div, [data-testid="stAlert"] div[role="alert"] {{
+        .st-emotion-cache-1629p8f p, .stMarkdown p, .stMarkdown li, .sttextinput_label, .sttextarea_label, .stselectbox_label, div[data-baseweb="select"] > div, [data-testid="stExpander"] summary, .stButton > button, [data-testid="stDownloadButton"] button div, [data-testid="stAlert"] div[role="alert"] {{
             font-family: 'Cormorant Garamond', serif !important;
             color: var(--text-light) !important;
             font-size: 1.2rem !important;
@@ -2037,16 +2037,16 @@ def page_test_harness():
 
 def display_business_info():
     """Exibe um rodapé com informações comerciais para conformidade com o Stripe."""
-    st.markdown("---")
-    with st.container():
+    # O container com borda cria a separação visual
+    with st.container(border=True):
         st.subheader("Informações e Políticas")
 
         with st.expander("Contato e Suporte ao Cliente"):
             st.markdown("""
             Para dúvidas, suporte ou questões sobre sua leitura, por favor, entre em contato pelo e-mail:
-            **seu-email-de-contato@exemplo.com**
+            **staromisticoapp@gmail.com**
 
-            Nosso tempo de resposta é de até 48 horas.
+            Nosso tempo de resposta é de até 72 horas.
             """)
 
         with st.expander("Política de Reembolso e Disputas"):
@@ -2063,7 +2063,6 @@ def display_business_info():
             3.  **Pagamento:** Todos os pagamentos são processados de forma segura através do Stripe. Ao efetuar o pagamento, você concorda com nossa política de não reembolso.
             4.  **Uso dos Dados:** A pergunta que você faz e o seu nome são usados exclusivamente para gerar sua leitura e não são armazenados ou utilizados para qualquer outro fim após a conclusão da sua sessão.
             """)
-
 
 # ==============================================================================
 # 4. ÁREA PRINCIPAL COM FLUXO GUIADO (ESTRUTURA CORRIGIDA)
