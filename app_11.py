@@ -28,6 +28,7 @@ def get_img_as_base64(file):
         # Retorna None silenciosamente para que o CSS de fallback seja usado.
         return None
 
+
 def apply_mystical_theme():
     """Aplica o tema visual místico avançado e imersivo à aplicação."""
     img = get_img_as_base64("images/pergaminho.png")
@@ -71,21 +72,18 @@ def apply_mystical_theme():
         }}
 
         /* ==================== TIPOGRAFIA MÍSTICA ==================== */
-        /* Modificação no h1 para dar mais destaque */
         h1, h2, h3, h4, h5, h6 {{
             font-family: 'Cinzel', serif !important;
             color: var(--primary-gold) !important;
-            /* Sombra de brilho (existente) + Sombra de contraste (nova) */
             text-shadow: 2px 2px 5px rgba(0,0,0,0.5), 0 0 10px rgba(212, 175, 55, 0.5), 0 0 20px rgba(212, 175, 55, 0.3);
             letter-spacing: 1px;
         }}
 
-        /* Aumentando o tamanho do h1 e removendo margens extras */
         h1 {{
-            font-size: 3.5rem !important; /* Aumentado de 3rem */
+            font-size: 3.5rem !important;
             font-weight: 700 !important;
             text-align: center;
-            margin-bottom: 0.5rem !important; /* Ajuste de margem */
+            margin-bottom: 0.5rem !important;
             padding-bottom: 0 !important;
             border-bottom: none !important;
         }}
@@ -93,33 +91,55 @@ def apply_mystical_theme():
         h2 {{ font-size: 2.2rem !important; font-weight: 600 !important; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 0.5rem; }}
         h3 {{ font-size: 1.8rem !important; font-weight: 500 !important; color: var(--secondary-gold) !important; }}
 
-        p, div, span, label {{
+        /* <<< CORREÇÃO 1: REGRA DE FONTE MAIS ESPECÍFICA E SEGURA >>> */
+        /* Em vez de uma regra global para 'p, div, span, label', aplicamos a fonte apenas onde queremos,
+           evitando conflito com os ícones internos do Streamlit (a causa do 'keyboard_arrow_right'). */
+        .st-emotion-cache-1629p8f p, /* Parágrafos principais */
+        .stMarkdown p, /* Parágrafos dentro de st.markdown */
+        .sttextinput_label, /* Labels de st.text_input */
+        .sttextarea_label, /* Labels de st.text_area */
+        .stselectbox_label, /* Labels de st.selectbox */
+        div[data-baseweb="select"] > div, /* Texto dentro do selectbox */
+        [data-testid="stExpander"] summary, /* Texto do cabeçalho do expander */
+        .stButton > button, /* Texto do botão */
+        [data-testid="stDownloadButton"] button div, /* Texto do botão de download */
+        [data-testid="stAlert"] div[role="alert"] /* Texto dentro de alertas */
+        {{
             font-family: 'Cormorant Garamond', serif !important;
             color: var(--text-light) !important;
-            font-size: 1.2rem !important;  /* Aumentado de 1.1rem para 1.2rem */
-            line-height: 1.7 !important; /* Aumentado de 1.6 para 1.7 para mais espaço */
+            font-size: 1.2rem !important;
+            line-height: 1.7 !important;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
         }}
 
+        /* Precisamos resetar a fonte para os botões que devem usar Cinzel */
+        .stButton > button, [data-testid="stDownloadButton"] button {{
+             font-family: 'Cinzel', serif !important;
+        }}
+
+        /* Removemos a regra global antiga para evitar conflitos */
+        /* p, div, span, label {{ ... }} FOI REMOVIDA */
+
         /* ==================== CONTAINERS E CARDS MÍSTICOS ==================== */
-        /* Estilo para os containers GERAIS (deixamos como estava) */
+        /* <<< CORREÇÃO 2: AUMENTO DA OPACIDADE DOS FUNDOS DOS CONTAINERS >>> */
+        /* Aumentamos a opacidade (o último valor em rgba) para garantir que o fundo roxo
+           seja visível na Streamlit Cloud, mesmo com o backdrop-filter. */
         [data-testid="stVerticalBlockBorderWrapper"] {{
-            background: linear-gradient(145deg, rgba(46, 26, 71, 0.7) 0%, rgba(30, 58, 95, 0.6) 50%, rgba(15, 15, 35, 0.8) 100%) !important;
+            background: linear-gradient(145deg, rgba(46, 26, 71, 0.85) 0%, rgba(30, 58, 95, 0.8) 50%, rgba(15, 15, 35, 0.9) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow), inset 0 1px 0 rgba(212, 175, 55, 0.2) !important;
-            backdrop-filter: blur(8px) !important; /* Reduzimos um pouco o blur para compensar a opacidade */
+            backdrop-filter: blur(8px) !important;
             padding: 1.5rem !important;
             margin: 1rem 0 !important;
         }}
 
-        /* NOVO: Estilo DEDICADO para o container do cabeçalho */
         .header-container {{
-            background: linear-gradient(160deg, var(--deep-purple) 0%, #1a1a2e 70%, #0f0f23 100%) !important; /* Gradiente mais escuro e rico */
+            background: linear-gradient(160deg, rgba(46, 26, 71, 0.95) 0%, rgba(26, 26, 46, 0.9) 70%, rgba(15, 15, 35, 0.95) 100%) !important;
             border: var(--border-mystical) !important;
             border-radius: 15px !important;
             box-shadow: var(--card-shadow) !important;
-            padding: 1rem 1.5rem !important; /* Ajuste no padding vertical */
+            padding: 1rem 1.5rem !important;
             margin: 1rem 0 !important;
             text-align: center;
         }}
@@ -136,7 +156,7 @@ def apply_mystical_theme():
             padding: 0.8rem 2rem !important;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
             width: 100%;
-            position: relative; /* Necessário para o disfarce do link */
+            position: relative;
         }}
 
         .stButton > button:hover, [data-testid="stDownloadButton"] button:hover {{
@@ -145,47 +165,39 @@ def apply_mystical_theme():
             border-color: var(--secondary-gold) !important;
         }}
 
-        /* NOVO: Fazendo o LINK dentro do botão de download se comportar */
         [data-testid="stDownloadButton"] button a {{
-            position: absolute; /* Coloca o link sobre o botão */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            text-indent: -9999px; /* Esconde o texto do link ("Download ...") */
-            z-index: 1;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            text-indent: -9999px; z-index: 1;
         }}
 
-        /* Garantindo que o TEXTO do botão (o seu label) fique por cima do link invisível */
         [data-testid="stDownloadButton"] button div {{
             color: var(--primary-gold) !important;
-            z-index: 2;
-            position: relative;
+            z-index: 2; position: relative;
         }}
 
-        /* Cor do texto no hover */
         [data-testid="stDownloadButton"] button:hover div {{
             color: var(--secondary-gold) !important;
         }}
 
         /* ==================== EXPANDER MÍSTICO (ACORDEÃO) ==================== */
+        /* Com a correção na fonte, o expander deve funcionar perfeitamente.
+           Mantemos os estilos de cor e borda. */
         [data-testid="stExpander"] {{
-            border-color: rgba(212, 175, 55, 0.4) !important; /* Borda dourada sutil */
+            border-color: rgba(212, 175, 55, 0.4) !important;
             transition: all 0.3s ease-in-out !important;
         }}
 
         [data-testid="stExpander"]:hover {{
-            border-color: var(--primary-gold) !important; /* Borda dourada mais forte no hover */
+            border-color: var(--primary-gold) !important;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important;
         }}
 
-        /* Estilizando o CABEÇALHO do expander (o texto clicável) */
         [data-testid="stExpander"] summary {{
             color: var(--secondary-gold) !important;
             font-style: italic;
         }}
 
-        /* Estilizando a SETA do expander */
         [data-testid="stExpander"] summary svg {{
             fill: var(--primary-gold) !important;
         }}
@@ -206,14 +218,12 @@ def apply_mystical_theme():
         }}
 
         /* ==================== SELECTBOX DROPDOWN (OPÇÕES) ==================== */
-        /* A lista que envolve as opções do selectbox */
         div[data-baseweb="popover"] {{
-            background-color: transparent !important; /* Remove o fundo branco do próprio popover */
+            background-color: transparent !important;
             border: none !important;
             box-shadow: none !important;
         }}
 
-        /* A lista (ul) DENTRO do popover recebe o nosso estilo */
         div[data-baseweb="popover"] ul {{
             background: linear-gradient(160deg, var(--deep-purple) 0%, #1a1a2e 70%, #0f0f23 100%) !important;
             border: 2px solid var(--primary-gold) !important;
@@ -222,15 +232,13 @@ def apply_mystical_theme():
             padding: 0.5rem 0 !important;
         }}
 
-        /* Cada item (li) na lista */
         div[data-baseweb="popover"] li {{
             font-family: 'Cormorant Garamond', serif !important;
             color: var(--text-light) !important;
             transition: background-color 0.2s ease-in-out !important;
-            padding: 0.75rem 1.5rem !important; /* Aumenta o espaço para melhor clique */
+            padding: 0.75rem 1.5rem !important;
         }}
 
-        /* Efeito de HOVER (mouse em cima) e SELEÇÃO */
         div[data-baseweb="popover"] li:hover,
         div[data-baseweb="popover"] li[aria-selected="true"] {{
             background-color: rgba(212, 175, 55, 0.25) !important;
@@ -246,7 +254,6 @@ def apply_mystical_theme():
             padding: 1rem 1.5rem !important;
         }}
 
-        /* Estilo para o texto DENTRO do alerta */
         [data-testid="stAlert"] div[role="alert"] {{
             color: var(--text-light) !important;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.8) !important;
@@ -261,14 +268,8 @@ def apply_mystical_theme():
             border: 3px solid var(--primary-gold) !important;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }}
-
-        .stImage:hover > img {{
-            transform: translateY(-5px) scale(1.03) !important;
-        }}
-
-        button[aria-label="View fullscreen"] {{
-            display: none !important;
-        }}
+        .stImage:hover > img {{ transform: translateY(-5px) scale(1.03) !important; }}
+        button[aria-label="View fullscreen"] {{ display: none !important; }}
 
         /* ==================== EFEITOS ESPECIAIS ==================== */
         .main-title {{
@@ -282,35 +283,32 @@ def apply_mystical_theme():
         .payment-button-container {{
             background: linear-gradient(145deg, var(--secondary-gold) 0%, var(--primary-gold) 50%, var(--secondary-gold) 100%) !important;
             background-size: 200% auto !important;
-            color: var(--deep-purple) !important; /* Alto contraste com o fundo dourado */
+            color: var(--deep-purple) !important;
             font-family: 'Cinzel', serif !important;
-            font-size: 1.3rem !important; /* Um pouco maior para mais destaque */
+            font-size: 1.3rem !important;
             font-weight: 700 !important;
             border: 2px solid var(--primary-gold) !important;
-            border-radius: 50px !important; /* Formato de pílula, mais moderno e premium */
+            border-radius: 50px !important;
             padding: 1rem 2.5rem !important;
             text-align: center !important;
-            text-shadow: none !important; /* Remove a sombra global para texto nítido */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 15px rgba(244, 228, 166, 0.4) !important; /* Sombra normal + brilho dourado */
+            text-shadow: none !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 15px rgba(244, 228, 166, 0.4) !important;
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
             display: block !important;
         }}
 
         .payment-button-container:hover {{
             transform: translateY(-4px) scale(1.03) !important;
-            /* Intensifica a aura mágica no hover */
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 25px rgba(244, 228, 166, 0.7), 0 0 40px rgba(212, 175, 55, 0.5) !important;
-            background-position: right center !important; /* Anima o gradiente */
+            background-position: right center !important;
         }}
 
         .card-reveal {{ animation: cardReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; }}
         @keyframes cardReveal {{ from {{ transform: rotateY(90deg) scale(0.8); opacity: 0; }} to {{ transform: rotateY(0deg) scale(1); opacity: 1; }} }}
 
-        /* Aplicando delays para cada carta */
         [data-testid="column"]:nth-child(1) .card-reveal {{ animation-delay: 0.1s; }}
         [data-testid="column"]:nth-child(2) .card-reveal {{ animation-delay: 0.3s; }}
         [data-testid="column"]:nth-child(3) .card-reveal {{ animation-delay: 0.5s; }}
-        /* (adicione mais se precisar para tiragens maiores) */
     </style>
     """)
 
