@@ -104,6 +104,13 @@ def apply_mystical_theme():
             margin-bottom: 0;
         }}
 
+        /* <<< CORREÇÃO FINAL: Cor dos rótulos dos widgets >>> */
+        /* Esta regra força os labels dos widgets a usarem a nossa cor de texto clara. */
+        [data-testid="stWidgetLabel"] p {{
+            color: var(--text-light) !important;
+            font-size: 1.2rem !important; /* Mantém o tamanho consistente */
+        }}
+
         /* ==================== CONTAINERS E CARDS MÍSTICOS (SOLUÇÃO CORRIGIDA) ==================== */
 
         /* Regra para o cabeçalho, que já funciona bem */
