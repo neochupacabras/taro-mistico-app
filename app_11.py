@@ -2064,7 +2064,9 @@ def page_welcome():
         else:
             st.warning("O Oráculo aguarda seu nome para criar a conexão.")
 
+
 def page_configure():
+    # Lê o nome do snapshot, que é a fonte confiável
     user_name = st.session_state.selected.get("user_name", "Viajante")
 
     with st.container(border=True):
@@ -2078,15 +2080,33 @@ def page_configure():
             "Jornada do Autoconhecimento (5 cartas)": 5
         }
         st.selectbox("🔮 Primeiro, escolha o tipo de tiragem:", list(spread_options.keys()), key="spread_choice")
+
+        # --- CÓDIGO RESTAURADO: EXPLICAÇÃO DA TIRAGEM COM st.expander ---
+        # Pega a escolha atual para exibir a explicação correspondente.
+        spread_choice = st.session_state.get("spread_choice")
+        explanation = SPREAD_EXPLANATIONS.get(spread_choice)
+        if explanation:
+            with st.expander("Saiba mais sobre esta tiragem"):
+                st.subheader(explanation['title'])
+                st.markdown(f"**Propósito:** {explanation['purpose']}")
+                st.markdown(f"**Como Funciona:** {explanation['how_it_works']}")
+        # -----------------------------------------------------------------
+
         mystical_divider(margin="1rem 0")
         st.text_area("❓ Em seguida, concentre-se em seu foco (opcional):", placeholder="Ex: 'Qual energia devo focar na minha carreira?'", key="question")
         mystical_divider(margin="1rem 0")
         st.selectbox("✨ Por fim, escolha o tom da voz do Oráculo:", list(STYLE_EXPLANATIONS.keys()), key="reading_style")
 
+        # --- CÓDIGO RESTAURADO: EXPLICAÇÃO DO ESTILO COM st.expander ---
+        reading_style = st.session_state.get("reading_style")
+        if reading_style in STYLE_EXPLANATIONS:
+            with st.expander("Clique para entender os diferentes tons do Oráculo"):
+                st.markdown(f"#### {reading_style}")
+                st.write(STYLE_EXPLANATIONS[reading_style])
+        # --------------------------------------------------------------
+
     if st.button("Confirmar Intenção e Preparar o Oráculo ➡", use_container_width=True, key="to_payment_button"):
-        # --- CORREÇÃO DEFINITIVA ---
-        # Recria o snapshot, desempacotando o antigo para preservar o nome
-        # e adicionando/sobrescrevendo com as novas escolhas.
+        # A lógica de snapshot robusta que já funciona
         current_snapshot = st.session_state.get("selected", {})
         st.session_state.selected = {
             **current_snapshot,
