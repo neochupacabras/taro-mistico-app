@@ -103,10 +103,9 @@ def apply_mystical_theme():
         }}
 
         /* ==================== CONTAINERS E CARDS MÍSTICOS ==================== */
-        /* Containers com fundo roxo sólido (compatível em qualquer navegador) */
+        /* Containers com fundo roxo SÓLIDO (corrigido para cloud) */
         [data-testid="stVerticalBlockBorderWrapper"]{{
-          background: linear-gradient(145deg, rgba(46, 26, 71, 0.9) 0%, rgba(30, 58, 95, 0.8) 50%, rgba(15, 15, 35, 0.95) 100%) !important; /* gradiente opaco */
-          background-color: #2e1a47 !important; /* fallback sólido */
+          background: var(--deep-purple) !important; /* FUNDO SÓLIDO */
           border: var(--border-mystical) !important;
           border-radius: 15px !important;
           box-shadow: var(--card-shadow), inset 0 1px 0 rgba(212, 175, 55, 0.2) !important;
@@ -224,12 +223,20 @@ def apply_mystical_theme():
             fill: var(--primary-gold) !important;
         }}
 
-        /* --- CORREÇÃO: Esconde QUALQUER ícone residual no summary --- */
+        /* CORREÇÃO ROBUSTA PARA OS ÍCONES DOS EXPANDERS */
         [data-testid="stExpander"] summary .material-icons,
         [data-testid="stExpander"] summary [class*="material-icons"],
-        [data-testid="stExpander"] summary [aria-label="keyboard_arrow_right"] {{
+        [data-testid="stExpander"] summary [aria-label="keyboard_arrow_right"],
+        [data-testid="stExpander"] summary svg,
+        [data-testid="stExpander"] summary::marker {{
           display: none !important;
           font-size: 0 !important;
+          width: 0 !important;
+          height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
         }}
 
         /* ==================== CAMPOS DE ENTRADA MÍSTICOS ==================== */
