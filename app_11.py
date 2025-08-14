@@ -340,6 +340,11 @@ def apply_mystical_theme():
             visibility: visible !important;
         }}
 
+        /* Oculta a barra lateral de navegação de páginas múltiplas */
+        [data-testid="stSidebar"] {{
+            display: none;
+        }}
+
     </style>
     """)
 
@@ -2034,36 +2039,6 @@ def page_test_harness():
         if st.button("🔴 RESET TOTAL DA SESSÃO 🔴", use_container_width=True):
             full_reset()
 
-
-def display_business_info():
-    """Exibe um rodapé com informações comerciais para conformidade com o Stripe."""
-    # O container com borda cria a separação visual
-    with st.container(border=True):
-        st.subheader("Informações e Políticas")
-
-        with st.expander("Contato e Suporte ao Cliente"):
-            st.markdown("""
-            Para dúvidas, suporte ou questões sobre sua leitura, por favor, entre em contato pelo e-mail:
-            **staromisticoapp@gmail.com**
-
-            Nosso tempo de resposta é de até 72 horas.
-            """)
-
-        with st.expander("Política de Reembolso e Disputas"):
-            st.markdown("""
-            **Natureza dos Serviços Digitais:** Nossas leituras de tarô são produtos digitais gerados por IA e entregues instantaneamente após o pagamento. Devido a essa natureza e aos custos computacionais incorridos (uso da API da OpenAI) para gerar cada interpretação única, **não oferecemos reembolsos** após a entrega da leitura.
-
-            **Disputas:** Caso ocorra um problema técnico e você não receba sua leitura após um pagamento bem-sucedido, por favor, entre em contato com nosso suporte. Faremos o possível para investigar e garantir que você receba o serviço pelo qual pagou.
-            """)
-
-        with st.expander("Termos e Condições do Serviço"):
-            st.markdown("""
-            1.  **Natureza do Serviço:** O "Tarô Místico" é uma ferramenta de entretenimento e autoconhecimento. As leituras são geradas por um modelo de inteligência artificial e devem ser vistas como uma fonte de inspiração e reflexão, não como aconselhamento profissional (financeiro, legal, médico, etc.) ou previsões factuais do futuro.
-            2.  **Idade Mínima:** Você deve ter 18 anos ou mais para utilizar este serviço.
-            3.  **Pagamento:** Todos os pagamentos são processados de forma segura através do Stripe. Ao efetuar o pagamento, você concorda com nossa política de não reembolso.
-            4.  **Uso dos Dados:** A pergunta que você faz e o seu nome são usados exclusivamente para gerar sua leitura e não são armazenados ou utilizados para qualquer outro fim após a conclusão da sua sessão.
-            """)
-
 # ==============================================================================
 # 4. ÁREA PRINCIPAL COM FLUXO GUIADO (ESTRUTURA CORRIGIDA)
 # ==============================================================================
@@ -2081,7 +2056,7 @@ def page_welcome():
         st.text_input(
             "Para começar, diga ao Oráculo o nome pelo qual ele deve se dirigir a você:",
             key="user_name",
-            placeholder="Seu nome ou apelido místico..."
+            placeholder="Digite seu nome ou apelido..."
         )
 
     if st.button("🌟 Iniciar Jornada Mística", use_container_width=True):
@@ -2096,13 +2071,8 @@ def page_welcome():
         else:
             st.warning("O Oráculo aguarda seu nome para criar a conexão.")
 
-    # <<< CORREÇÃO PRINCIPAL: ADICIONANDO O ESPAÇADOR >>>
-    # Este container vazio cria o espaço "em branco" (sem fundo roxo) que você quer.
-    with st.container():
-        st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True) # Apenas para garantir um espaçamento mínimo
-
-    # --- Seção de Políticas (agora visualmente separada) ---
-    display_business_info()
+    # --- link para a página de políticas ---
+    st.markdown("<p style='text-align: center; margin-top: 2rem;'>Ao prosseguir, você concorda com nossos <a href='/Politicas' target='_self'>Termos e Políticas</a>.</p>", unsafe_allow_html=True)
 
 
 def page_configure():
