@@ -305,6 +305,18 @@ def apply_mystical_theme():
             opacity: 1 !important;
             visibility: visible !important;
         }}
+
+        /* ==================== CSS DE DEBUG (REMOVER APÓS TESTES) ==================== */
+        [data-testid="stVerticalBlockBorderWrapper"] {{
+            border: 3px solid red !important;
+            background-color: rgba(255, 0, 0, 0.3) !important;
+            min-height: 50px !important;
+        }}
+
+        /* Debug para ver todos os containers */
+        .stContainer, [data-testid="stVerticalBlock"], .element-container {{
+            border: 1px dashed yellow !important;
+        }}
     </style>
     """)
 
