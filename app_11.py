@@ -6,9 +6,12 @@ from datetime import datetime
 from fpdf import FPDF, XPos, YPos
 import unicodedata
 import base64
-import stripe
 from uuid import uuid4
 import re
+try:
+    import stripe
+except ImportError:
+    stripe = None # Se a importação falhar, a variável 'stripe' existirá como None
 
 # ==============================================================================
 # 1. ESTILO E FUNÇÕES DE TEMA
@@ -377,6 +380,11 @@ stripe_session_id = query_params.get("session_id")
 
 # Se um session_id está na URL, o usuário está voltando do pagamento.
 if stripe_session_id and 'payment_verified' not in st.session_state:
+    # Verificação defensiva
+    if stripe is None:
+        st.error("ERRO CRÍTICO: A biblioteca de pagamento (Stripe) não está disponível. Verifique o arquivo requirements.txt.")
+        st.stop()
+
     try:
         stripe.api_key = st.secrets["stripe"]["secret_key"]
         session = stripe.checkout.Session.retrieve(stripe_session_id)
@@ -2119,8 +2127,16 @@ def page_configure():
 
 
 def page_payment():
+    # Verificação defensiva no início da função
+    if stripe is None:
+        st.error("ERRO CRÍTICO: A biblioteca de pagamento (Stripe) não está disponível. Verifique o arquivo requirements.txt.")
+        st.stop()
+
+    # Inicializa a flag de controle do fluxo de pagamento
+    if 'payment_in_progress' not in st.session_state:
+        st.session_state.payment_in_progress = False
+
     stripe.api_key = st.secrets["stripe"]["secret_key"]
-    # A única fonte de verdade para as escolhas é o 'selected' snapshot
     sel = st.session_state.get("selected", {})
     user_name = sel.get("user_name", "Viajante")
 
@@ -2128,59 +2144,52 @@ def page_payment():
         st.header(f"Passo 2: O Portal de Pagamento")
         st.markdown(f"Sua intenção foi recebida, **{user_name}**. As cartas foram consagradas à sua energia. A revelação aguarda do outro lado do portal.")
         mystical_divider()
-
         st.subheader("Resumo da sua Consulta:")
         st.markdown(f'**- Tipo de Tiragem:** `{sel.get("spread_choice", "—")}`')
         st.markdown(f'**- Estilo de Leitura:** `{sel.get("reading_style", "—")}`')
         if sel.get("question"):
             st.markdown(f'**- Foco:** `{sel["question"]}`')
-
         mystical_divider()
 
-    try:
-        host_url = st.secrets["app"]["base_url"]
+    # --- LÓGICA DE CONTROLE DE FLUXO EM DUAS ETAPAS ---
+    if st.session_state.payment_in_progress:
+        try:
+            st.info("Conectando ao portal de pagamento seguro... Você será redirecionado em breve.")
+            host_url = st.secrets["app"]["base_url"]
+            spread_choice = sel.get("spread_choice", "Consulta Padrão")
+            user_name_for_stripe = sel.get("user_name", "Viajante")
+            metadata = {
+                "spread_choice": spread_choice,
+                "reading_style": sel.get("reading_style", ""),
+                "question": sel.get("question", ""),
+                "user_name": user_name_for_stripe,
+            }
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[{'price_data': {'currency': 'brl', 'product_data': {'name': f'Leitura de Tarô Místico: {spread_choice}', 'description': f'Uma consulta de tarô personalizada para {user_name_for_stripe}.'},'unit_amount': 500,}, 'quantity': 1,}],
+                mode='payment',
+                success_url=f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}",
+                cancel_url=host_url,
+                client_reference_id=str(uuid4()),
+                metadata=metadata,
+            )
+            st.session_state.stripe_session_id = checkout_session.id
+            st.session_state.payment_in_progress = False
 
-        # --- CORREÇÃO FUNDAMENTAL: LER DO SNAPSHOT 'sel' ---
-        spread_choice = sel.get("spread_choice", "Consulta Padrão")
-        user_name_for_stripe = sel.get("user_name", "Viajante")
+            # Usa o redirecionamento via script, que é mais robusto que o meta refresh
+            redirect_script = f'<script>window.top.location.href = "{checkout_session.url}";</script>'
+            st.components.v1.html(redirect_script)
 
-        metadata = {
-            "spread_choice": spread_choice,
-            "reading_style": sel.get("reading_style", ""),
-            "question": sel.get("question", ""),
-            "user_name": user_name_for_stripe, # Agora envia o nome correto para o Stripe
-        }
+        except Exception as e:
+            st.error(f"Não foi possível conectar ao portal de pagamento: {e}")
+            st.session_state.payment_in_progress = False
+    else:
+        if st.button("Pagar e Cruzar o Portal para a Revelação", use_container_width=True, key="pay_button_start"):
+            st.session_state.payment_in_progress = True
+            st.rerun()
 
-        checkout_session = stripe.checkout.Session.create(
-            line_items=[{
-                'price_data': {
-                    'currency': 'brl', 'product_data': {'name': f'Leitura de Tarô Místico: {spread_choice}', 'description': f'Uma consulta de tarô personalizada para {user_name_for_stripe}.'},
-                    'unit_amount': 500,
-                }, 'quantity': 1,
-            }],
-            mode='payment',
-            success_url=f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=host_url,
-            client_reference_id=str(uuid4()),
-            metadata=metadata,
-        )
-
-        payment_link_html = f"""
-            <a href="{checkout_session.url}" target="_self" class="payment-button-container" style="text-decoration: none;">
-                Pagar e Cruzar o Portal para a Revelação
-            </a>
-        """
-        st.markdown(payment_link_html, unsafe_allow_html=True)
-
-    except Exception as e:
-        st.error(f"Ocorreu um erro ao preparar o portal de pagamento: {e}")
-        st.warning("Por favor, tente voltar e refazer sua configuração.")
-
-    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
-    if st.button("⬅ Voltar e Alterar Intenção", use_container_width=True, key="back_to_configure_button"):
-        st.session_state.app_step = 'configure'
-        st.rerun()
-
+        if st.button("⬅ Voltar e Alterar Intenção", use_container_width=True, key="back_to_configure_button"):
+            st.session_state.app_step = 'configure'
+            st.rerun()
 
 def page_result():
     # A lógica de verificação do Stripe já restaurou o estado.
