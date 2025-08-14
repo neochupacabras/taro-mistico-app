@@ -37,6 +37,7 @@ def apply_mystical_theme():
     <style>
         /* ==================== IMPORTAÇÃO DE FONTES ==================== */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/icon?family=Material+Icons'); /* <-- ADICIONE ESTA LINHA */
 
         /* ==================== VARIÁVEIS CSS CUSTOMIZADAS ==================== */
         :root {{
@@ -102,25 +103,15 @@ def apply_mystical_theme():
         }}
 
         /* ==================== CONTAINERS E CARDS MÍSTICOS ==================== */
-        /* Estilo para os containers GERAIS (com fundo sólido para compatibilidade) */
-        [data-testid="stVerticalBlockBorderWrapper"] {{
-            background-color: rgba(30, 20, 50, 0.85) !important; /* Fundo roxo escuro semi-transparente */
-            border: var(--border-mystical) !important;
-            border-radius: 15px !important;
-            box-shadow: var(--card-shadow), inset 0 1px 0 rgba(212, 175, 55, 0.2) !important;
-            padding: 1.5rem !important;
-            margin: 1rem 0 !important;
-        }}
-
-        /* NOVO: Estilo DEDICADO para o container do cabeçalho */
-        .header-container {{
-            background: linear-gradient(160deg, var(--deep-purple) 0%, #1a1a2e 70%, #0f0f23 100%) !important; /* Gradiente mais escuro e rico */
-            border: var(--border-mystical) !important;
-            border-radius: 15px !important;
-            box-shadow: var(--card-shadow) !important;
-            padding: 1rem 1.5rem !important; /* Ajuste no padding vertical */
-            margin: 1rem 0 !important;
-            text-align: center;
+        /* Containers com fundo roxo sólido (compatível em qualquer navegador) */
+        [data-testid="stVerticalBlockBorderWrapper"]{{
+          background: linear-gradient(145deg, rgba(46, 26, 71, 0.9) 0%, rgba(30, 58, 95, 0.8) 50%, rgba(15, 15, 35, 0.95) 100%) !important; /* gradiente opaco */
+          background-color: #2e1a47 !important; /* fallback sólido */
+          border: var(--border-mystical) !important;
+          border-radius: 15px !important;
+          box-shadow: var(--card-shadow), inset 0 1px 0 rgba(212, 175, 55, 0.2) !important;
+          padding: 1.5rem !important;
+          margin: 1rem 0 !important;
         }}
 
         /* ==================== BARRA LATERAL DE DIAGNÓSTICO ==================== */
@@ -226,6 +217,19 @@ def apply_mystical_theme():
         /* Gira nossa seta quando o expander está aberto */
         [data-testid="stExpander"][aria-expanded="true"] summary::before {{
             transform: translateY(-50%) rotate(90deg);
+        }}
+
+        /* Estilizando a SETA do expander */
+        [data-testid="stExpander"] summary svg {{
+            fill: var(--primary-gold) !important;
+        }}
+
+        /* --- CORREÇÃO: Esconde QUALQUER ícone residual no summary --- */
+        [data-testid="stExpander"] summary .material-icons,
+        [data-testid="stExpander"] summary [class*="material-icons"],
+        [data-testid="stExpander"] summary [aria-label="keyboard_arrow_right"] {{
+          display: none !important;
+          font-size: 0 !important;
         }}
 
         /* ==================== CAMPOS DE ENTRADA MÍSTICOS ==================== */
@@ -2194,13 +2198,15 @@ def page_payment():
             metadata=metadata,
         )
 
-        # --- CORREÇÃO FINAL: USANDO st.link_button ---
-        # Este componente nativo é a maneira mais robusta de criar um link de navegação.
-        st.link_button(
-            label="Pagar e Cruzar o Portal para a Revelação",
-            url=checkout_session.url,
-            use_container_width=True
-        )
+        # --- CORREÇÃO FINAL: Link <a> com target="_top" ---
+        payment_link_html = f"""
+            <a href="{checkout_session.url}"
+               target="_top" rel="noopener"
+               class="payment-button-container" style="text-decoration: none;">
+               Pagar e Cruzar o Portal para a Revelação
+            </a>
+        """
+        st.markdown(payment_link_html, unsafe_allow_html=True)
 
     except Exception as e:
         st.error(f"Ocorreu um erro ao preparar o portal de pagamento: {e}")
