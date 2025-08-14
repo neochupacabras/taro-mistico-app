@@ -306,16 +306,46 @@ def apply_mystical_theme():
             visibility: visible !important;
         }}
 
-        /* ==================== CSS DE DEBUG (REMOVER APÓS TESTES) ==================== */
+        /* ==================== CSS DE DEBUG EXPANDIDO (REMOVER APÓS TESTES) ==================== */
+        /* Testando todos os possíveis seletores de container */
         [data-testid="stVerticalBlockBorderWrapper"] {{
             border: 3px solid red !important;
             background-color: rgba(255, 0, 0, 0.3) !important;
-            min-height: 50px !important;
         }}
 
-        /* Debug para ver todos os containers */
-        .stContainer, [data-testid="stVerticalBlock"], .element-container {{
+        [data-testid="stVerticalBlock"] {{
+            border: 3px solid blue !important;
+            background-color: rgba(0, 0, 255, 0.3) !important;
+        }}
+
+        .stVerticalBlock {{
+            border: 3px solid green !important;
+            background-color: rgba(0, 255, 0, 0.3) !important;
+        }}
+
+        [data-testid="block-container"] {{
+            border: 3px solid purple !important;
+            background-color: rgba(128, 0, 128, 0.3) !important;
+        }}
+
+        .block-container {{
+            border: 3px solid orange !important;
+            background-color: rgba(255, 165, 0, 0.3) !important;
+        }}
+
+        [data-testid="stContainer"] {{
+            border: 3px solid pink !important;
+            background-color: rgba(255, 192, 203, 0.3) !important;
+        }}
+
+        .element-container {{
             border: 1px dashed yellow !important;
+        }}
+
+        /* Containers criados com st.container() */
+        div[data-stale="false"] > div > div {{
+            border: 2px solid cyan !important;
+            background-color: rgba(0, 255, 255, 0.3) !important;
         }}
     </style>
     """)
