@@ -2180,10 +2180,11 @@ def page_payment():
             metadata=metadata,
         )
 
-        # --- A CORREÇÃO FINAL E DEFINITIVA ---
-        # Trocamos target="_self" por target="_top" para "quebrar" o iframe do Streamlit Cloud
+        # --- A CORREÇÃO FINAL FINALÍSSIMA ---
+        # Trocamos para target="_blank" para forçar a abertura em uma nova guia,
+        # contornando a interceptação de eventos do Streamlit.
         payment_link_html = f"""
-            <a href="{checkout_session.url}" target="_top" class="payment-button-container" style="text-decoration: none;">
+            <a href="{checkout_session.url}" target="_blank" class="payment-button-container" style="text-decoration: none;">
                 Pagar e Cruzar o Portal para a Revelação
             </a>
         """
@@ -2197,6 +2198,7 @@ def page_payment():
     if st.button("⬅ Voltar e Alterar Intenção", use_container_width=True, key="back_to_configure_button"):
         st.session_state.app_step = 'configure'
         st.rerun()
+
 
 def page_result():
     # A lógica de verificação do Stripe já restaurou o estado.
