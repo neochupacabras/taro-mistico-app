@@ -384,20 +384,12 @@ def mystical_divider(margin="2rem 0"):
 # 2. CONFIGURAÇÃO INICIAL E LÓGICA DE PASSOS
 # ==============================================================================
 
-st.set_page_config(page_title="🔮 Tarô Místico", page_icon="🔮", layout="centered", initial_sidebar_state="collapsed")
-
-# --- NOVO CÓDIGO PARA META TAGS ---
-st.html("""
-    <head>
-        <title>🔮 Tarô Místico - Sua Revelação Sagrada</title>
-        <meta property="og:title" content="🔮 Tarô Místico - Sua Revelação Sagrada">
-        <meta property="og:description" content="Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda.">
-        <meta property="og:image" content="https://github.com/neochupacabras/taro-mistico-app/blob/main/images/pergaminho4.png">
-        <meta property="og:url" content="https://taro-mistico-app.onrender.com">
-        <meta name="twitter:card" content="summary_large_image">
-    </head>
-""")
-# --- FIM DO NOVO CÓDIGO ---
+st.set_page_config(
+    page_title="🔮 Tarô Místico - Sua Revelação Sagrada",
+    page_icon="🔮",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
 apply_mystical_theme()
 
