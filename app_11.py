@@ -1,5 +1,45 @@
 import streamlit as st
+import streamlit.components.v1 as components
+
+# 1. PRIMEIRO: Page config
 st.set_page_config(page_title="🔮 Tarô Místico - Sua Revelação Sagrada", page_icon="🔮")
+
+# 2. SEGUNDO: Meta tags personalizadas
+components.html(
+    """
+    <script>
+        // Adiciona meta tags ao head
+        const head = document.getElementsByTagName('head')[0];
+
+        // Open Graph tags para WhatsApp/Facebook
+        const ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        ogTitle.setAttribute('content', 'Tarô Místico - Sua Revelação Sagrada');
+        head.appendChild(ogTitle);
+
+        const ogDescription = document.createElement('meta');
+        ogDescription.setAttribute('property', 'og:description');
+        ogDescription.setAttribute('content', 'Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda.');
+        head.appendChild(ogDescription);
+
+        const ogImage = document.createElement('meta');
+        ogImage.setAttribute('property', 'og:image');
+        ogImage.setAttribute('content', 'https://github.com/neochupacabras/taro-mistico-app/blob/main/images/pergaminho4.png');
+        head.appendChild(ogImage);
+
+        // Twitter Card tags
+        const twitterCard = document.createElement('meta');
+        twitterCard.setAttribute('name', 'twitter:card');
+        twitterCard.setAttribute('content', 'summary_large_image');
+        head.appendChild(twitterCard);
+    </script>
+    """,
+    height=0  # Invisible
+)
+
+# 3. TERCEIRO: Seu código principal
+st.title("🔮 Taro Místico - Sua Revelação Sagrada")
+
 import random
 import openai
 import os
