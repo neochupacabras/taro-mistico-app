@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="🔮 Tarô Místico - Sua Revelação Sagrada", page_icon="🔮")
 import random
 import openai
 import os
