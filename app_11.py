@@ -2,39 +2,44 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. PRIMEIRO: Page config
-st.set_page_config(page_title="🔮 Tarô Místico - Sua Revelação Sagrada", page_icon="🔮")
+st.set_page_config(
+    page_title="🔮 Tarô Místico - Sua Revelação Sagrada",
+    page_icon="🔮",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
-# 2. SEGUNDO: Meta tags personalizadas
+# Meta tags mais completas
 components.html(
     """
+    <head>
+        <title>Tarô Místico - Sua Revelação Sagrada</title>
+        <meta property="og:title" content="Tarô Místico - Sua Revelação Sagrada" />
+        <meta property="og:description" content="Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda" />
+        <meta property="og:image" content="https://github.com/neochupacabras/taro-mistico-app/blob/main/images/pergaminho4.png" />
+        <meta property="og:url" content="https://taro-mistico-app.onrender.com" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Taro Místico" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Taro Místico" />
+        <meta name="twitter:description" content="Consulta personalizada de tarot" />
+        <meta name="twitter:image" content="https://github.com/neochupacabras/taro-mistico-app/blob/main/images/pergaminho4.png" />
+    </head>
+
     <script>
-        // Adiciona meta tags ao head
-        const head = document.getElementsByTagName('head')[0];
+        // Força a mudança do título da página
+        document.title = "Tarô Místico - Sua Revelação Sagrada";
 
-        // Open Graph tags para WhatsApp/Facebook
-        const ogTitle = document.createElement('meta');
-        ogTitle.setAttribute('property', 'og:title');
-        ogTitle.setAttribute('content', 'Tarô Místico - Sua Revelação Sagrada');
-        head.appendChild(ogTitle);
-
-        const ogDescription = document.createElement('meta');
-        ogDescription.setAttribute('property', 'og:description');
-        ogDescription.setAttribute('content', 'Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda.');
-        head.appendChild(ogDescription);
-
-        const ogImage = document.createElement('meta');
-        ogImage.setAttribute('property', 'og:image');
-        ogImage.setAttribute('content', 'https://github.com/neochupacabras/taro-mistico-app/blob/main/images/pergaminho4.png');
-        head.appendChild(ogImage);
-
-        // Twitter Card tags
-        const twitterCard = document.createElement('meta');
-        twitterCard.setAttribute('name', 'twitter:card');
-        twitterCard.setAttribute('content', 'summary_large_image');
-        head.appendChild(twitterCard);
+        // Remove qualquer referência ao Streamlit do título
+        setTimeout(function() {
+            if (document.title.includes('Streamlit')) {
+                document.title = "Tarô Místico - Sua Revelação Sagrada";
+            }
+        }, 1000);
     </script>
     """,
-    height=0  # Invisible
+    height=0
 )
 
 import random
