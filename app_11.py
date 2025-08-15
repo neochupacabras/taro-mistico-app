@@ -10,37 +10,38 @@ st.set_page_config(
 )
 
 # Meta tags mais completas
-components.html(
-    """
-    <head>
-        <title>Tarô Místico - Sua Revelação Sagrada</title>
-        <meta property="og:title" content="Tarô Místico - Sua Revelação Sagrada" />
-        <meta property="og:description" content="Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda" />
-        <meta property="og:image" content="https://github.com/neochupacabras/taro-mistico-app/blob/main/images/pergaminho4.png" />
-        <meta property="og:url" content="https://taro-mistico-app.onrender.com" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Taro Místico" />
+# ADICIONE ESTE CÓDIGO - É isso que está faltando!
+components.html("""
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const head = document.getElementsByTagName('head')[0];
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Taro Místico" />
-        <meta name="twitter:description" content="Consulta personalizada de tarot" />
-        <meta name="twitter:image" content="https://github.com/neochupacabras/taro-mistico-app/blob/main/images/pergaminho4.png" />
-    </head>
+    // Cria e adiciona as meta tags do Open Graph
+    const metaTags = [
+        {property: 'og:title', content: '🔮 Tarô Místico - Sua Revelação Sagrada'},
+        {property: 'og:description', content: 'Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda.'},
+        {property: 'og:type', content: 'website'},
+        {property: 'og:url', content: 'https://taro-mistico-app.onrender.com'},
+        {property: 'og:site_name', content: 'Tarô Místico'},
+        {name: 'description', content: 'Consulta personalizada de tarô online - Descubra seu destino'}
+    ];
 
-    <script>
-        // Força a mudança do título da página
-        document.title = "Tarô Místico - Sua Revelação Sagrada";
+    metaTags.forEach(tagInfo => {
+        const meta = document.createElement('meta');
+        if (tagInfo.property) {
+            meta.setAttribute('property', tagInfo.property);
+        }
+        if (tagInfo.name) {
+            meta.setAttribute('name', tagInfo.name);
+        }
+        meta.setAttribute('content', tagInfo.content);
+        head.appendChild(meta);
+    });
 
-        // Remove qualquer referência ao Streamlit do título
-        setTimeout(function() {
-            if (document.title.includes('Streamlit')) {
-                document.title = "Tarô Místico - Sua Revelação Sagrada";
-            }
-        }, 1000);
-    </script>
-    """,
-    height=0
-)
+    console.log('Meta tags adicionadas com sucesso!');
+});
+</script>
+""", height=0)
 
 import random
 import openai
