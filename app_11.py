@@ -13,6 +13,8 @@ try:
 except ImportError:
     stripe = None # Se a importação falhar, a variável 'stripe' existirá como None
 
+stripe_price_id = os.environ.get("STRIPE_PRICE_ID")
+
 # ==============================================================================
 # 1. ESTILO E FUNÇÕES DE TEMA
 # ==============================================================================
@@ -2191,10 +2193,8 @@ def page_payment():
 
         checkout_session = stripe.checkout.Session.create(
             line_items=[{
-                'price_data': {
-                    'currency': 'brl', 'product_data': {'name': f'Leitura de Tarô Místico: {spread_choice}', 'description': f'Uma consulta de tarô personalizada para {user_name_for_stripe}.'},
-                    'unit_amount': 500,
-                }, 'quantity': 1,
+                'price': stripe_price_id, # Usa a variável de ambiente
+                'quantity': 1,
             }],
             mode='payment',
             success_url=f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}",
