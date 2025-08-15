@@ -355,6 +355,16 @@ def apply_mystical_theme():
             display: none;
         }}
 
+        /* ==================== OCULTAR ELEMENTOS PADRÃO DO STREAMLIT ==================== */
+        /* Oculta o cabeçalho que contém o menu hambúrguer e a faixa branca */
+        header {{
+            display: none !important;
+        }}
+
+        /* Oculta o rodapé "Made with Streamlit" */
+        footer {{
+            display: none !important;
+        }}
     </style>
     """)
 
