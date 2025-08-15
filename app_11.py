@@ -396,7 +396,7 @@ if stripe_session_id and 'payment_verified' not in st.session_state:
         st.stop()
 
     try:
-        stripe.api_key = st.secrets["stripe"]["secret_key"]
+        stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
         session = stripe.checkout.Session.retrieve(stripe_session_id)
 
         if session.payment_status == "paid":
@@ -2144,7 +2144,7 @@ def page_payment():
         st.error("ERRO CRÍTICO: A biblioteca de pagamento (Stripe) não está disponível. Verifique o arquivo requirements.txt.")
         st.stop()
 
-    stripe.api_key = st.secrets["stripe"]["secret_key"]
+    stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
     sel = st.session_state.get("selected", {})
     user_name = sel.get("user_name", "Viajante")
 
@@ -2162,7 +2162,7 @@ def page_payment():
         mystical_divider()
 
     try:
-        host_url = st.secrets["app"]["base_url"]
+        host_url = os.environ.get("APP_BASE_URL")
         spread_choice = sel.get("spread_choice", "Consulta Padrão")
         user_name_for_stripe = sel.get("user_name", "Viajante")
 
@@ -2235,7 +2235,7 @@ def page_result():
 
         with st.spinner("O oráculo está consultando as estrelas e tecendo sua resposta... ✨"):
             try:
-                api_key_secreta = st.secrets["openai"]["api_key"]
+                api_key_secreta = os.environ.get("OPENAI_API_KEY")
             except (KeyError, FileNotFoundError):
                 st.error("Chave da API não configurada.")
                 st.stop()
