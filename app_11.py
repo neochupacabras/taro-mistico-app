@@ -178,6 +178,16 @@ def apply_mystical_theme():
         [data-testid="stDownloadButton"] button div {{ color: var(--primary-gold) !important; z-index: 2; position: relative; }}
         [data-testid="stDownloadButton"] button:hover div {{ color: var(--secondary-gold) !important; }}
 
+        /* <<< Estilo do st.page_link >>> */
+        [data-testid="stPageLink"] a p {{
+            color: var(--text-light) !important; /* Cor branca para a label */
+            font-weight: 700 !important; /* Opcional: dá mais destaque */
+            text-decoration: underline; /* Opcional: deixa claro que é um link */
+        }}
+        [data-testid="stPageLink"] a:hover p {{
+            color: var(--primary-gold) !important; /* Opcional: muda de cor no hover */
+        }}
+
         /* ==================== EXPANDER MÍSTICO (ACORDEÃO) - VERSÃO LIMPA ==================== */
         [data-testid="stExpander"] {{
             border-color: rgba(212, 175, 55, 0.4) !important;
