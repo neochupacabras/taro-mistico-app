@@ -19,33 +19,6 @@ stripe_price_id = os.environ.get("STRIPE_PRICE_ID")
 # 1. ESTILO E FUNÇÕES DE TEMA
 # ==============================================================================
 
-# NOVA FUNÇÃO PARA INJETAR META TAGS
-def inject_custom_meta_tags():
-    meta_tags_html = """
-    <head>
-        <title>🔮 Tarô Místico - Sua Revelação Sagrada</title>
-        <meta name="title" content="🔮 Tarô Místico - Sua Revelação Sagrada">
-        <meta name="description" content="Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda.">
-
-        <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://taro-mistico-app.onrender.com/">
-        <meta property="og:title" content="🔮 Tarô Místico - Sua Revelação Sagrada">
-        <meta property="og:description" content="Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda.">
-        <meta property="og:image" content="https://github.com/neochupacabras/taro-mistico-app/raw/main/images/pergaminho4.png">
-
-        <!-- Twitter -->
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="https://taro-mistico-app.onrender.com/">
-        <meta property="twitter:title" content="🔮 Tarô Místico - Sua Revelação Sagrada">
-        <meta property="twitter:description" content="Um portal para o autoconhecimento através dos arquétipos universais. Receba uma leitura de tarô personalizada e profunda.">
-        <meta property="twitter:image" content="https://github.com/neochupacabras/taro-mistico-app/raw/main/images/pergaminho4.png">
-    </head>
-    """
-    st.components.v1.html(meta_tags_html, height=0)
-
-
-
 @st.cache_data
 def get_img_as_base64(file):
     """Lê um arquivo de imagem e o converte para uma string Base64."""
@@ -419,8 +392,6 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
-
-inject_custom_meta_tags()
 
 apply_mystical_theme()
 
