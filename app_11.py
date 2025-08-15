@@ -37,9 +37,6 @@ components.html(
     height=0  # Invisible
 )
 
-# 3. TERCEIRO: Seu código principal
-st.title("🔮 Taro Místico - Sua Revelação Sagrada")
-
 import random
 import openai
 import os
