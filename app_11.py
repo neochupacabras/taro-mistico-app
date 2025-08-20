@@ -2177,6 +2177,8 @@ def page_payment():
         if sel.get("question"):
             st.markdown(f'**- Foco:** `{sel["question"]}`')
 
+        st.markdown(f'**- Valor da Consulta:** R$ 5,90')
+
         mystical_divider()
 
     try:
