@@ -22,18 +22,22 @@ from utils.pdf_templates import create_dream_pdf
 
 # Configuração das chaves (esta parte permanece igual)
 try:
-    # Lendo as variáveis de ambiente com prefixo
-    openai.api_key = st.secrets["DREAM_OPENAI_API_KEY"]
-    stripe_price_id = st.secrets["DREAM_STRIPE_PRICE_ID"]
+    # <<< CORREÇÃO AQUI: Usando os.environ.get para ler as variáveis de ambiente >>>
+    openai.api_key = os.environ.get("DREAM_OPENAI_API_KEY")
+    stripe_price_id = os.environ.get("DREAM_STRIPE_PRICE_ID")
 
     # Chaves comuns
-    stripe_secret_key = st.secrets["STRIPE_SECRET_KEY"]
-    app_base_url = st.secrets["APP_BASE_URL"]
+    stripe_secret_key = os.environ.get("STRIPE_SECRET_KEY")
+    app_base_url = os.environ.get("APP_BASE_URL")
+
+    # Verificação para garantir que todas as chaves foram encontradas
+    if not all([openai.api_key, stripe_price_id, stripe_secret_key, app_base_url]):
+        raise KeyError("Uma ou mais variáveis de ambiente não foram encontradas.")
 
     if stripe:
         stripe.api_key = stripe_secret_key
 
-except (FileNotFoundError, KeyError) as e:
+except KeyError as e:
     st.error(f"ERRO CRÍTICO: Verifique se as variáveis de ambiente (ex: DREAM_OPENAI_API_KEY) estão configuradas no Render. Detalhe: {e}")
     st.stop()
 

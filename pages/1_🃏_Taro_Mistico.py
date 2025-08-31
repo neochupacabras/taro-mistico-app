@@ -23,19 +23,23 @@ from utils.helpers import get_img_as_base64, strip_emojis, mystical_divider
 from utils.pdf_templates import MysticalPDF, create_reading_pdf
 
 try:
-    # Lendo as variáveis de ambiente com prefixo
-    openai_api_key = st.secrets["TAROT_OPENAI_API_KEY"]
-    stripe_price_id = st.secrets["TAROT_STRIPE_PRICE_ID"]
+    # <<< CORREÇÃO AQUI: Usando os.environ.get para ler as variáveis de ambiente >>>
+    openai_api_key = os.environ.get("TAROT_OPENAI_API_KEY")
+    stripe_price_id = os.environ.get("TAROT_STRIPE_PRICE_ID")
 
     # Chaves comuns
-    stripe_secret_key = st.secrets["STRIPE_SECRET_KEY"]
-    app_base_url = st.secrets["APP_BASE_URL"]
+    stripe_secret_key = os.environ.get("STRIPE_SECRET_KEY")
+    app_base_url = os.environ.get("APP_BASE_URL")
+
+    # Verificação para garantir que todas as chaves foram encontradas
+    if not all([openai_api_key, stripe_price_id, stripe_secret_key, app_base_url]):
+        raise KeyError("Uma ou mais variáveis de ambiente não foram encontradas.")
 
     if stripe:
         stripe.api_key = stripe_secret_key
     openai.api_key = openai_api_key
 
-except (FileNotFoundError, KeyError) as e:
+except KeyError as e:
     st.error(f"ERRO CRÍTICO: Verifique se as variáveis de ambiente (ex: TAROT_OPENAI_API_KEY) estão configuradas no Render. Detalhe: {e}")
     st.stop()
 
