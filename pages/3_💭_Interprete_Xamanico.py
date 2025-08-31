@@ -22,19 +22,19 @@ from utils.pdf_templates import create_dream_pdf
 
 # Configuração das chaves (esta parte permanece igual)
 try:
-    # Chaves específicas de Sonhos
-    openai.api_key = st.secrets["dream"]["openai_api_key"]
-    stripe_price_id = st.secrets["dream"]["stripe_price_id"]
+    # Lendo as variáveis de ambiente com prefixo
+    openai.api_key = st.secrets["DREAM_OPENAI_API_KEY"]
+    stripe_price_id = st.secrets["DREAM_STRIPE_PRICE_ID"]
 
     # Chaves comuns
-    stripe_secret_key = st.secrets["stripe_secret_key"]
-    app_base_url = st.secrets["app_base_url"]
+    stripe_secret_key = st.secrets["STRIPE_SECRET_KEY"]
+    app_base_url = st.secrets["APP_BASE_URL"]
 
     if stripe:
         stripe.api_key = stripe_secret_key
 
 except (FileNotFoundError, KeyError) as e:
-    st.error(f"ERRO CRÍTICO: Verifique se as seções [dream] e comuns estão completas no arquivo .streamlit/secrets.toml. Detalhe: {e}")
+    st.error(f"ERRO CRÍTICO: Verifique se as variáveis de ambiente (ex: DREAM_OPENAI_API_KEY) estão configuradas no Render. Detalhe: {e}")
     st.stop()
 
 

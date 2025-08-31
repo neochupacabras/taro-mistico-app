@@ -23,20 +23,20 @@ from utils.helpers import get_img_as_base64, strip_emojis, mystical_divider
 from utils.pdf_templates import MysticalPDF, create_reading_pdf
 
 try:
-    # Chaves específicas do Tarô
-    openai_api_key = st.secrets["tarot"]["openai_api_key"]
-    stripe_price_id = st.secrets["tarot"]["stripe_price_id"]
+    # Lendo as variáveis de ambiente com prefixo
+    openai_api_key = st.secrets["TAROT_OPENAI_API_KEY"]
+    stripe_price_id = st.secrets["TAROT_STRIPE_PRICE_ID"]
 
     # Chaves comuns
-    stripe_secret_key = st.secrets["stripe_secret_key"]
-    app_base_url = st.secrets["app_base_url"]
+    stripe_secret_key = st.secrets["STRIPE_SECRET_KEY"]
+    app_base_url = st.secrets["APP_BASE_URL"]
 
     if stripe:
         stripe.api_key = stripe_secret_key
     openai.api_key = openai_api_key
 
 except (FileNotFoundError, KeyError) as e:
-    st.error(f"ERRO CRÍTICO: Verifique se as seções [tarot] e comuns estão completas no arquivo .streamlit/secrets.toml. Detalhe: {e}")
+    st.error(f"ERRO CRÍTICO: Verifique se as variáveis de ambiente (ex: TAROT_OPENAI_API_KEY) estão configuradas no Render. Detalhe: {e}")
     st.stop()
 
 

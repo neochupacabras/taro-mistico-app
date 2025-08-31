@@ -38,19 +38,19 @@ from utils.pdf_templates import create_astro_pdf
 # Configuração das chaves via Streamlit Secrets
 # Certifique-se de ter o arquivo .streamlit/secrets.toml
 try:
-    # Chaves específicas de Astrologia
-    openai.api_key = st.secrets["astro"]["openai_api_key"]
-    stripe_price_id = st.secrets["astro"]["stripe_price_id"]
+    # Lendo as variáveis de ambiente com prefixo
+    openai.api_key = st.secrets["ASTRO_OPENAI_API_KEY"]
+    stripe_price_id = st.secrets["ASTRO_STRIPE_PRICE_ID"]
 
     # Chaves comuns
-    stripe_secret_key = st.secrets["stripe_secret_key"]
-    app_base_url = st.secrets["app_base_url"]
+    stripe_secret_key = st.secrets["STRIPE_SECRET_KEY"]
+    app_base_url = st.secrets["APP_BASE_URL"]
 
     if stripe:
         stripe.api_key = stripe_secret_key
 
 except (FileNotFoundError, KeyError) as e:
-    st.error(f"ERRO CRÍTICO: Verifique se as seções [astro] e comuns estão completas no arquivo .streamlit/secrets.toml. Detalhe: {e}")
+    st.error(f"ERRO CRÍTICO: Verifique se as variáveis de ambiente (ex: ASTRO_OPENAI_API_KEY) estão configuradas no Render. Detalhe: {e}")
     st.stop()
 
 
