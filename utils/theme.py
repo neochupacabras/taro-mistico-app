@@ -339,6 +339,29 @@ def apply_mystical_theme():
         [data-testid="stSidebar"] {{
             display: none;
         }}
+
+        /* <<< NOVO BLOCO DE CÓDIGO PARA RESPONSIVIDADE >>> */
+        /* ==================== RESPONSIVIDADE PARA MOBILE ==================== */
+        @media (max-width: 768px) {{
+            h1, .main-title {{
+                font-size: 2.2rem !important; /* Reduz drasticamente o título principal */
+                line-height: 1.3 !important;   /* Melhora o espaçamento entre linhas se o título quebrar */
+            }}
+
+            h2 {{
+                font-size: 1.8rem !important; /* Reduz os subtítulos */
+            }}
+
+            .header-container p {{
+                font-size: 1rem !important; /* Ajusta o subtítulo do cabeçalho */
+                margin-top: -0.5rem !important;
+            }}
+
+            .stVerticalBlock, .header-container {{
+                padding: 1.2rem !important; /* Reduz o preenchimento interno dos containers */
+                margin: 0.8rem 0 !important;
+            }}
+        }}
     </style>
     """)
 
@@ -930,6 +953,29 @@ def apply_cosmic_theme():
             0% {{ background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }}
             100% {{ background-position: 550px 550px, -550px 550px, 550px -550px, -550px -550px, 550px 550px; }}
         }}
+
+        /* <<< NOVO BLOCO DE CÓDIGO PARA RESPONSIVIDADE >>> */
+        /* ==================== RESPONSIVIDADE PARA MOBILE ==================== */
+        @media (max-width: 768px) {{
+            h1, .main-title {{
+                font-size: 2.2rem !important;
+                line-height: 1.3 !important;
+            }}
+
+            h2 {{
+                font-size: 1.8rem !important;
+            }}
+
+            .header-container p {{
+                font-size: 1rem !important;
+                margin-top: -0.5rem !important;
+            }}
+
+            .stVerticalBlock, .header-container {{
+                padding: 1.2rem !important;
+                margin: 0.8rem 0 !important;
+            }}
+        }}
     </style>
     """)
 
@@ -1260,6 +1306,29 @@ def apply_shamanic_theme():
         @keyframes spiritDance {{
             0% {{ background-position: 0 0; }}
             100% {{ background-position: 550px 550px; }}
+        }}
+
+        /* <<< NOVO BLOCO DE CÓDIGO PARA RESPONSIVIDADE >>> */
+        /* ==================== RESPONSIVIDADE PARA MOBILE ==================== */
+        @media (max-width: 768px) {{
+            h1, .main-title {{
+                font-size: 2.2rem !important;
+                line-height: 1.3 !important;
+            }}
+
+            h2 {{
+                font-size: 1.8rem !important;
+            }}
+
+            .header-container p {{
+                font-size: 1.1rem !important; /* Um pouco maior neste tema, que tem menos texto */
+                margin-top: -0.5rem !important;
+            }}
+
+            .stVerticalBlock, .header-container {{
+                padding: 1.2rem !important;
+                margin: 0.8rem 0 !important;
+            }}
         }}
     </style>
     """)
