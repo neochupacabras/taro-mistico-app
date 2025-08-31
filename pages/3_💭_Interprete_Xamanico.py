@@ -333,7 +333,7 @@ def page_result():
 
         st.button(
             "Compartilhar Outro Sonho (Nova Jornada)",
-            on_click=reset_current_app,
+            on_click=reset_app_state,
             args=('dream',),
             width='stretch'
         )
