@@ -18,7 +18,7 @@ RUN sed -i '/<\/head>/i \
     <!-- Meta Tags Injetadas para o Santuário das Revelações -->\
     <meta property="og:title" content="🔮 Santuário das Revelações">\
     <meta property="og:description" content="Um portal sagrado com três oráculos: Tarô Místico, Ecos Estelares e o Intérprete Xamânico. Desvende os mistérios da sua alma.">\
-    <meta property="og:image" content="https://raw.githubusercontent.com/seu-usuario-github/seu-repositorio/main/images/santuario_preview.png">\
+    <meta property="og:image" content="https://raw.githubusercontent.com/neochupacabras/taro-mistico-app/c4c8ce5c94ebba548c2cff41fa73dc117bdbe09d/images/santuario_preview.png">\
     <meta property="og:url" content="https://taromistico.onrender.com/">\
     <meta name="twitter:card" content="summary_large_image">\
     ' /usr/local/lib/python3.10/site-packages/streamlit/static/index.html
