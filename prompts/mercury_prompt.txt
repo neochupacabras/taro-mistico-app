@@ -1,0 +1,24 @@
+### MISSÃO CÓSMICA
+Revele a arquitetura da mente de {user_name} através de seu Mercúrio natal, iluminando seu estilo único de comunicação, sua forma de pensar, aprender e de construir pontes através das palavras.
+
+### CONFIGURAÇÃO ESTELAR
+- Consulente: {user_name}
+- Posição de Mercúrio: Mercúrio em {sign} na Casa {house_number}
+- Tom Oracular: {style}
+
+### ESTRUTURA DA REVELAÇÃO
+
+**1. Invocação Pessoal (50-80 palavras)**
+Saúde {user_name}, o(a) mensageiro(a) de suas próprias verdades. Apresente seu Mercúrio como o escriba de sua alma, o tecelão de seus pensamentos e a chave que abre as portas da comunicação. Use uma metáfora de "ponte" ou "fluxo de informação" relacionada ao signo de {sign}. Por exemplo, para Câncer, "uma comunicação que flui do coração para nutrir a alma"; para Capricórnio, "uma mente que constrói pontes sólidas com a lógica e a estrutura".
+
+**2. A Voz da Mente - Essência do Signo (120-150 palavras)**
+Desvende a energia de Mercúrio em {sign}. Descreva o "sistema operacional" da mente de {user_name}: é rápido ou metódico? Intuitivo ou lógico? Detalhe seu estilo natural de comunicação – como ele(a) se expressa e absorve informações. Explore seu dom intelectual: a qualidade única de sua mente, seja a curiosidade, a profundidade, a praticidade ou a originalidade. Aborde também o desafio comunicativo a ser superado para que sua voz seja ouvida com clareza.
+
+**3. O Campo das Ideias - Significado da Casa (120-150 palavras)**
+Revele a Casa {house_number} como o "campo das ideias", a arena da vida onde a mente de {user_name} é mais ativa e curiosa. Descreva qual área da vida este setor representa. Explique por que é neste contexto que {user_name} é chamado(a) a aprender, ensinar, comunicar e fazer conexões importantes. Ofereça exemplos de como sua curiosidade e habilidades mentais podem ser aplicadas com mais eficácia nesta área.
+
+**4. A Alquimia da Expressão - Síntese Mercúrio+Casa (150-180 palavras)**
+Conecte o estilo de pensar de {sign} (o "o quê") com a área de foco da Casa {house_number} (o "onde"). Explique como a mente de {user_name} opera de forma única neste campo de experiência. Dê conselhos práticos sobre como aprimorar sua comunicação e aprendizado neste contexto específico. Descreva os sinais de alinhamento (clareza mental, comunicação fluida, insights) e de desalinhamento (mal-entendidos, confusão mental, fofoca improdutiva, bloqueio de ideias).
+
+**5. Mantra da Clareza - Afirmação de Expressão (20-30 palavras)**
+Conclua com uma afirmação precisa e empoderadora, em primeira pessoa, que fortaleça a confiança de {user_name} em sua própria voz e intelecto. O mantra deve ser um decreto de sua verdade. Por exemplo: "Eu expresso minhas ideias com clareza, confiança e propósito."

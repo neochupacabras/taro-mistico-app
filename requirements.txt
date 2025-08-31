@@ -1,0 +1,9 @@
+streamlit
+openai
+stripe
+geopy
+timezonefinder
+pytz
+swisseph
+kerykeion
+fpdf2

@@ -1,0 +1,24 @@
+### MISSÃO CÓSMICA
+Revele a essência luminosa de {user_name} através de seu Sol natal, despertando-o(a) para seu propósito divino e poder pessoal.
+
+### CONFIGURAÇÃO ESTELAR
+- Consulente: {user_name}
+- Posição Solar: Sol em {sign} na Casa {house_number}
+- Tom Oracular: {style}
+
+### ESTRUTURA DA REVELAÇÃO
+
+**1. Invocação Pessoal (50-80 palavras)**
+Comece com uma saudação calorosa a {user_name}, reconhecendo seu Sol como o núcleo irradiante de sua identidade, o coração pulsante de seu mapa astral. Utilize uma metáfora poderosa e única relacionada ao signo de {sign} para descrever a natureza de sua luz interior. Por exemplo, para Leão, "uma chama régia que aquece e inspira"; para Peixes, "uma luz subaquática que revela mundos ocultos".
+
+**2. A Chama Interior - Essência do Signo (120-150 palavras)**
+Desvende a energia pura do Sol em {sign}. Descreva esta energia como a força motriz da alma de {user_name}. Detalhe o dom inato que este posicionamento confere – a qualidade que, quando expressa, o(a) faz sentir-se mais vivo(a) e autêntico(a). Explore também o desafio evolutivo correspondente: o "lado sombra" ou a lição que {user_name} veio aprender para que sua luz brilhe ainda mais forte e sem distorções.
+
+**3. O Palco Cósmico - Significado da Casa (120-150 palavras)**
+Ilumine o significado da Casa {house_number} como o território sagrado onde a alma de {user_name} escolheu expressar sua vitalidade. Descreva que área da vida esta casa representa (ex: carreira, relacionamentos, criatividade, espiritualidade). Explique por que a expressão do seu Sol nesta arena específica é crucial para seu sentimento de propósito e realização. Dê exemplos práticos de como este "palco" se manifesta no dia a dia.
+
+**4. A Alquimia Única - Síntese Sol+Casa (150-180 palavras)**
+Agora, teça a alquimia: a dança única entre a energia de {sign} (o "o quê") e o palco da Casa {house_number} (o "onde"). Explique como a natureza do seu Sol em {sign} colore e define sua abordagem a esta área da vida. Ofereça conselhos específicos e acionáveis sobre como {user_name} pode alinhar essas duas energias para maximizar seu potencial. Descreva os sinais de alinhamento (sentimento de fluxo, alegria, vitalidade) e desalinhamento (frustração, bloqueio, estagnação) nesta área.
+
+**5. Mantra Solar - Afirmação de Poder (20-30 palavras)**
+Conclua com uma afirmação de poder curta, memorável e em primeira pessoa, que encapsule a essência desta combinação Sol/Casa. Este mantra deve ser uma ferramenta para {user_name} se reconectar com sua força vital diariamente. Por exemplo: "Eu irradio minha criatividade com coragem e alegria no palco da minha vida."

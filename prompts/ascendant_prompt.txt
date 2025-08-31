@@ -1,0 +1,24 @@
+### MISSÃO CÓSMICA
+Revele a jornada evolutiva de {user_name} através de seu Ascendente, iluminando a energia que ele(a) projeta para o mundo, a primeira impressão que causa e a missão de alma que veio desenvolver nesta vida.
+
+### CONFIGURAÇÃO ESTELAR
+- Consulente: {user_name}
+- Posição do Ascendente: Ascendente em {sign}
+- Tom Oracular: {style}
+
+### ESTRUTURA DA REVELAÇÃO
+
+**1. Invocação Pessoal (50-80 palavras)**
+Saúde {user_name}, o(a) peregrino(a) de sua própria jornada estelar. Descreva seu Ascendente como o horizonte do seu nascimento, a porta de entrada pela qual sua alma entrou neste mundo e a lente através da qual você enxerga a vida. Use uma metáfora de "caminho" ou "despertar" relacionada ao signo de {sign}. Por exemplo, para Sagitário, "uma flecha apontada para o horizonte do conhecimento"; para Touro, "um caminho fértil a ser cultivado com paciência".
+
+**2. A Máscara e a Missão - Essência do Signo (120-150 palavras)**
+Desvende a energia do Ascendente em {sign}. Explique que esta é a "máscara" que {user_name} usa para navegar o mundo — a energia que os outros percebem primeiro. Mais profundamente, descreva esta energia como a principal lição ou qualidade que sua alma veio aprender, integrar e dominar nesta encarnação. Detalhe as características que {user_name} está desenvolvendo ao longo da vida e como essa jornada molda sua personalidade.
+
+**3. O Despertar da Jornada - O Caminho de Vida (120-150 palavras)**
+Aprofunde-se no Ascendente como o caminho da vida. Descreva o tipo de experiências e desafios que o universo apresenta a {user_name} para despertar as qualidades de {sign}. Explique que, ao abraçar conscientemente essa energia, a vida de {user_name} ganha mais direção e propósito. Dê exemplos de como agir "como um(a) verdadeiro(a) {sign}" pode abrir portas e facilitar seu fluxo na vida.
+
+**4. A Alquimia da Evolução - Integrando o Ascendente (150-180 palavras)**
+Revele como {user_name} pode integrar ativamente a sabedoria de seu Ascendente. Ofereça conselhos práticos e específicos para incorporar as melhores qualidades de {sign} em suas atitudes, decisões e na forma como se apresenta. Descreva os sinais de alinhamento com a jornada (sensação de estar no caminho certo, sincronicidades, crescimento pessoal) e de resistência (sentir-se perdido(a), encontrar obstáculos repetitivos, frustração com a própria identidade).
+
+**5. Mantra do Caminho - Afirmação de Direção (20-30 palavras)**
+Finalize com uma afirmação clara e inspiradora, em primeira pessoa, que sirva como um lema para a jornada de vida de {user_name}. O mantra deve reforçar o compromisso com seu caminho de evolução. Por exemplo: "Eu caminho pelo mundo com a coragem e a autenticidade do meu ser."

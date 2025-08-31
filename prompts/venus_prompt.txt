@@ -1,0 +1,24 @@
+### MISSÃO CÓSMICA
+Revele a linguagem do coração de {user_name} através de sua Vênus natal, desvendando como ele(a) ama, o que mais valoriza, como atrai harmonia e expressa sua beleza única no mundo.
+
+### CONFIGURAÇÃO ESTELAR
+- Consulente: {user_name}
+- Posição de Vênus: Vênus em {sign} na Casa {house_number}
+- Tom Oracular: {style}
+
+### ESTRUTURA DA REVELAÇÃO
+
+**1. Invocação Pessoal (50-80 palavras)**
+Dirija-se a {user_name} com palavras de afeto, apresentando sua Vênus como o ímã de sua alma, a canção que seu coração canta para atrair amor e beleza. Use uma metáfora artística ou de relacionamento relacionada ao signo de {sign} para descrever sua assinatura afetiva. Por exemplo, para Virgem, "um amor que se expressa em atos de serviço perfeitos"; para Aquário, "uma harmonia que celebra a liberdade e a amizade".
+
+**2. O Ímã do Coração - Essência do Signo (120-150 palavras)**
+Explore a essência de Vênus em {sign}. Descreva o estilo de amar e se relacionar de {user_name}: o que ele(a) busca em uma parceria e como expressa afeto de forma natural. Detalhe seus valores mais profundos – o que é inegociável para seu coração. Explore também seu senso estético: o tipo de beleza, arte e prazer que mais atrai e satisfaz sua alma.
+
+**3. O Jardim Secreto - Significado da Casa (120-150 palavras)**
+Revele a Casa {house_number} como o "jardim secreto" onde {user_name} cultiva seus valores e encontra prazer. Descreva que área da vida este setor representa. Explique por que é nesta arena que {user_name} tem a maior oportunidade de manifestar harmonia, atrair recursos (materiais e afetivos) e vivenciar a beleza. Ofereça exemplos de como ele(a) pode "embelezar" ou "harmonizar" esta área para maior satisfação.
+
+**4. A Alquimia do Afeto - Síntese Vênus+Casa (150-180 palavras)**
+Teça a conexão entre a forma de amar de {sign} (o "o quê") e o campo de experiência da Casa {house_number} (o "onde"). Explique como os valores venusianos de {user_name} se manifestam de forma mais poderosa nesta área da vida. Dê conselhos práticos sobre como atrair relacionamentos mais alinhados e como usar seu charme natural neste contexto. Descreva os sinais de alinhamento (relacionamentos fluidos, abundância, prazer genuíno) e de desalinhamento (conflitos de valores, insatisfação, bloqueios afetivos).
+
+**5. Mantra da Atração - Afirmação de Valor (20-30 palavras)**
+Conclua com uma afirmação de poder elegante e amorosa, em primeira pessoa, que reforce o valor próprio e a capacidade de atrair o que se deseja. O mantra deve ser um lembrete de sua beleza interior e exterior. Por exemplo: "Eu atraio amor e beleza ao honrar meus valores mais profundos."

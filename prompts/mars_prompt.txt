@@ -1,0 +1,24 @@
+### MISSÃO CÓSMICA
+Revele a força primordial de {user_name} através de seu Marte natal, despertando seu Guerreiro Interior para que ele(a) possa agir com coragem, perseguir seus desejos com paixão e afirmar sua vontade no mundo.
+
+### CONFIGURAÇÃO ESTELAR
+- Consulente: {user_name}
+- Posição de Marte: Marte em {sign} na Casa {house_number}
+- Tom Oracular: {style}
+
+### ESTRUTURA DA REVELAÇÃO
+
+**1. Invocação Pessoal (50-80 palavras)**
+Saúde {user_name}, portador(a) da chama da ação. Apresente seu Marte como a forja de sua vontade, o motor que impulsiona seus desejos e a espada que corta através da inércia. Use uma metáfora de "energia" ou "força" relacionada ao signo de {sign}. Por exemplo, para Libra, "uma força que luta pela justiça e pelo equilíbrio"; para Peixes, "um guerreiro que age guiado pela intuição e pela compaixão".
+
+**2. O Guerreiro Interior - Essência do Signo (120-150 palavras)**
+Desvende a natureza do Marte em {sign}. Descreva o estilo de ação de {user_name}: ele(a) é impulsivo(a) ou estratégico(a)? Direto(a) ou sutil? Detalhe o que o(a) motiva a agir e como ele(a) expressa raiva e assertividade. Explore seu dom de coragem: a forma única como ele(a) enfrenta desafios e defende o que acredita. Aborde também seu desafio marcial: o uso desequilibrado dessa energia (ex: agressividade ou passividade) que precisa ser dominado.
+
+**3. O Campo de Batalha - Significado da Casa (120-150 palavras)**
+Revele a Casa {house_number} como o "campo de batalha" – a arena da vida onde a energia de Marte de {user_name} é mais necessária e poderosa. Descreva que área da vida este setor representa. Explique por que é neste contexto que {user_name} é chamado(a) a ser corajoso(a), tomar a iniciativa e lutar por seus objetivos. Ofereça exemplos de como ele(a) pode canalizar sua energia de forma construtiva nesta área.
+
+**4. A Alquimia da Vontade - Síntese Marte+Casa (150-180 palavras)**
+Conecte o modo de agir de {sign} (o "o quê") com o palco de ação da Casa {house_number} (o "onde"). Explique como o Guerreiro Interior de {user_name} se manifesta de forma mais potente neste campo de experiência. Dê conselhos práticos e diretos sobre como tomar a iniciativa e superar obstáculos nesta área específica. Descreva os sinais de alinhamento (energia, progresso, conquistas, assertividade saudável) e de desalinhamento (frustração, conflitos destrutivos, raiva reprimida, falta de iniciativa).
+
+**5. Mantra do Guerreiro - Afirmação de Ação (20-30 palavras)**
+Conclua com uma afirmação curta, forte e decisiva, em primeira pessoa, que ancore {user_name} em seu poder de ação. O mantra deve ser um grito de guerra pessoal e empoderador. Por exemplo: "Eu ajo com coragem e foco para conquistar meus desejos."

@@ -1,0 +1,24 @@
+### MISSÃO CÓSMICA
+Revele o santuário interior de {user_name} através de sua Lua natal, guiando-o(a) a compreender suas necessidades emocionais profundas, nutrir sua alma e honrar sua intuição.
+
+### CONFIGURAÇÃO ESTELAR
+- Consulente: {user_name}
+- Posição Lunar: Lua em {sign} na Casa {house_number}
+- Tom Oracular: {style}
+
+### ESTRUTURA DA REVELAÇÃO
+
+**1. Invocação Pessoal (50-80 palavras)**
+Dirija-se a {user_name} com acolhimento, descrevendo sua Lua como a bússola de seu coração, o reflexo de seu oceano emocional interior. Use uma metáfora conectada à água ou à noite, relacionada ao signo de {sign}, para ilustrar a natureza de seu mundo interior. Por exemplo, para Escorpião, "águas profundas e magnéticas que guardam segredos"; para Gêmeos, "um riacho cintilante que reflete mil pensamentos".
+
+**2. O Oceano Interior - Essência do Signo (120-150 palavras)**
+Mergulhe na energia da Lua em {sign}. Descreva como {user_name} instintivamente reage e sente o mundo. Detalhe o que nutre sua alma e lhe traz uma sensação genuína de segurança e conforto – este é seu "alimento emocional". Explore o dom intuitivo que esta Lua confere. Aborde também seu desafio emocional: o padrão reativo ou a vulnerabilidade que, uma vez compreendida, se torna uma fonte de imensa força e sabedoria.
+
+**3. O Santuário Cósmico - Significado da Casa (120-150 palavras)**
+Apresente a Casa {house_number} como o santuário sagrado onde {user_name} busca segurança e expressa seu cuidado. Descreva qual área da vida este setor representa. Explique por que encontrar estabilidade emocional e nutrição nesta área específica é fundamental para seu bem-estar geral. Ofereça exemplos práticos de como {user_name} pode "cuidar" deste aspecto de sua vida para se sentir mais seguro(a) e em paz.
+
+**4. A Alquimia Sensível - Síntese Lua+Casa (150-180 palavras)**
+Revele a conexão íntima entre a necessidade emocional de {sign} (o "o quê") e o ambiente da Casa {house_number} (o "onde"). Explique como a natureza sensível da Lua em {sign} busca expressão e conforto nesta área específica da vida. Dê conselhos práticos sobre como criar rituais ou práticas que honrem essa combinação. Descreva os sinais de nutrição emocional (sentimento de pertencimento, calma, fluxo intuitivo) e de carência (ansiedade, reatividade, insegurança) nesta área.
+
+**5. Mantra Lunar - Afirmação de Acolhimento (20-30 palavras)**
+Conclua com uma afirmação suave e poderosa, em primeira pessoa, que sirva como um lembrete para {user_name} honrar suas necessidades emocionais. O mantra deve acolher e validar seus sentimentos. Por exemplo: "Eu nutro minha alma ao acolher minhas emoções com paciência e sabedoria."
