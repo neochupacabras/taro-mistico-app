@@ -19,7 +19,7 @@ except ImportError:
 
 # NOVOS IMPORTS DOS MÓDulos CENTRALIZADOS
 from utils.theme import apply_mystical_theme
-from utils.helpers import get_img_as_base64, strip_emojis, mystical_divider
+from utils.helpers import get_img_as_base64, strip_emojis, mystical_divider, reset_app_state
 from utils.pdf_templates import MysticalPDF, create_reading_pdf
 
 try:
