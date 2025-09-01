@@ -260,6 +260,11 @@ def page_payment():
     except Exception as e:
         st.error(f"Não foi possível criar o portal de pagamento: {e}")
 
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+    if st.button("⬅️ Voltar e Alterar Estilo", use_container_width=True):
+        st.session_state.dream_step = 'configure'
+        st.rerun()
+
 def page_result():
     """Página final que exibe a interpretação do sonho e oferece o download do PDF."""
     if not st.session_state.get('payment_verified'):

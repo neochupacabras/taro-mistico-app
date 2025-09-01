@@ -1598,6 +1598,10 @@ def page_configure():
         st.session_state.tarot_step = 'payment'
         st.rerun()
 
+    if st.button("⬅️ Voltar e Corrigir Nome", use_container_width=True, key="back_to_welcome_button"):
+        st.session_state.tarot_step = 'welcome'
+        st.rerun()
+
 
 def page_payment():
     # Verificação defensiva no início da função

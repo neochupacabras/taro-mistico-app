@@ -436,6 +436,10 @@ def page_configure():
         st.session_state.astro_step = 'payment'
         st.rerun()
 
+    if st.button("⬅️ Voltar e Corrigir Dados", use_container_width=True):
+        st.session_state.astro_step = 'welcome'
+        st.rerun()
+
 def page_payment():
     user_name = st.session_state.get("user_name", "Viajante")
     with st.container(border=True):
@@ -467,6 +471,11 @@ def page_payment():
         st.link_button("Pagar e Receber sua Revelação 🌠", checkout_session.url, width='stretch')
     except Exception as e:
         st.error(f"Não foi possível criar o portal de pagamento: {e}")
+
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+    if st.button("⬅️ Voltar e Alterar Análise", use_container_width=True):
+        st.session_state.astro_step = 'configure'
+        st.rerun()
 
 
 def page_result():
